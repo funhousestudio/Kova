@@ -37,7 +37,7 @@ const WEB_PUSH_STATE_FILENAME = "push/web-push-subscriptions.json";
 const VAPID_KEYS_FILENAME = "push/vapid-keys.json";
 const MAX_ENDPOINT_LENGTH = 2048;
 const MAX_KEY_LENGTH = 512;
-const DEFAULT_VAPID_SUBJECT = "https://openclaw.ai";
+// No default VAPID subject — operators must set OPENCLAW_VAPID_SUBJECT (e.g. "mailto:admin@yourdomain.com").
 
 const withLock = createAsyncLock();
 
@@ -140,7 +140,7 @@ export async function resolveVapidKeys(baseDir?: string): Promise<VapidKeyPair> 
 }
 
 function resolveVapidSubjectFromEnv(): string {
-  return process.env.OPENCLAW_VAPID_SUBJECT || DEFAULT_VAPID_SUBJECT;
+  return process.env.OPENCLAW_VAPID_SUBJECT ?? "";
 }
 
 function resolveVapidPublicKeyFromEnv(): string | undefined {

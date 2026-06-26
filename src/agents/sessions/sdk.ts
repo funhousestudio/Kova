@@ -182,8 +182,8 @@ function getAttributionHeaders(
 
   if (model.provider === "openrouter" || baseUrl.includes("openrouter.ai")) {
     return {
-      "HTTP-Referer": "https://openclaw.ai",
-      "X-OpenRouter-Title": "OpenClaw",
+      "HTTP-Referer": "https://kova.ai",
+      "X-OpenRouter-Title": "Kova",
       "X-OpenRouter-Categories": "cli-agent",
     };
   }

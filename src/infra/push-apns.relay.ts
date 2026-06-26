@@ -55,9 +55,10 @@ export type ApnsRelayRequestSender = (params: {
   payload: object;
 }) => Promise<ApnsRelayPushResponse>;
 
-/** Hosted APNs relay origin used only when registrations prove they were minted there. */
-export const DEFAULT_APNS_RELAY_BASE_URL = "https://ios-push-relay.openclaw.ai";
-export const DEFAULT_APNS_SANDBOX_RELAY_BASE_URL = "https://ios-push-relay-sandbox.openclaw.ai";
+/** No default APNs relay — operators must set OPENCLAW_APNS_RELAY_BASE_URL or
+ * gateway.push.apns.relay.baseUrl to self-host a relay before iOS push works. */
+export const DEFAULT_APNS_RELAY_BASE_URL = "";
+export const DEFAULT_APNS_SANDBOX_RELAY_BASE_URL = "";
 const DEFAULT_APNS_RELAY_TIMEOUT_MS = 10_000;
 const GATEWAY_DEVICE_ID_HEADER = "x-openclaw-gateway-device-id";
 const GATEWAY_SIGNATURE_HEADER = "x-openclaw-gateway-signature";
@@ -179,13 +180,7 @@ export function resolveApnsRelayConfigFromEnv(
     };
   }
 
-  const hostedRelayBaseUrl =
-    normalizedRegistrationOrigin?.value === DEFAULT_APNS_RELAY_BASE_URL
-      ? DEFAULT_APNS_RELAY_BASE_URL
-      : normalizedRegistrationOrigin?.value === DEFAULT_APNS_SANDBOX_RELAY_BASE_URL
-        ? DEFAULT_APNS_SANDBOX_RELAY_BASE_URL
-        : undefined;
-  const baseUrl = explicitBaseUrl ?? hostedRelayBaseUrl;
+  const baseUrl = explicitBaseUrl;
   const baseUrlSource = envBaseUrl
     ? "OPENCLAW_APNS_RELAY_BASE_URL"
     : configBaseUrl
