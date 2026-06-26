@@ -141,7 +141,7 @@ export function registerUpdateCli(program: Command) {
         ["kova update repair", "Repair stranded post-update plugin state"],
         ["kova update --acknowledge-clawhub-risk", "Acknowledge ClawHub plugin trust warnings"],
         ["kova update wizard", "Interactive update wizard"],
-        ["kova --update", "Shorthand for openclaw update"],
+        ["kova --update", "Shorthand for kova update"],
       ] as const;
       const fmtExamples = examples
         .map(([cmd, desc]) => `  ${theme.command(cmd)} ${theme.muted(`# ${desc}`)}`)
@@ -153,7 +153,7 @@ ${theme.heading("What this does:")}
 
 ${theme.heading("Switch channels:")}
   - Use --channel stable|beta|dev to persist the update channel in config
-  - Run openclaw update status to see the active channel and source
+  - Run kova update status to see the active channel and source
   - Use --tag <dist-tag|version|spec> for a one-off package update without persisting
   - Use --tag main for a one-off package update from GitHub main
 

@@ -128,10 +128,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
           ["kova status --all", "Full diagnosis (read-only)."],
           ["kova status --json", "Machine-readable output."],
           ["kova status --usage", "Show model provider usage/quota snapshots."],
-          [
-            "kova status --deep",
-            "Run channel probes (WA + Telegram + Discord + Slack + Signal).",
-          ],
+          ["kova status --deep", "Run channel probes (WA + Telegram + Discord + Slack + Signal)."],
           ["kova status --deep --timeout 5000", "Tighten probe timeout."],
         ])}`,
     )
@@ -254,10 +251,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
           ["kova sessions cleanup --enforce", "Apply maintenance now."],
           ["kova sessions cleanup --agent work --dry-run", "Preview one agent store."],
           ["kova sessions cleanup --all-agents --dry-run", "Preview all agent stores."],
-          [
-            "kova sessions cleanup --enforce --store ./tmp/sessions.json",
-            "Use a specific store.",
-          ],
+          ["kova sessions cleanup --enforce --store ./tmp/sessions.json", "Use a specific store."],
         ])}`,
     )
     .action(async (opts, command) => {
@@ -325,7 +319,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
     .command("export-trajectory")
     .description("Export a redacted trajectory bundle for a stored session")
     .option("--session-key <key>", "Session key to export")
-    .option("--output <path>", "Output directory name inside .openclaw/trajectory-exports")
+    .option("--output <path>", "Output directory name inside .kova/trajectory-exports")
     .option("--workspace <path>", "Workspace root for the export (default: current directory)")
     .option("--store <path>", "Path to session store (default: resolved from config)")
     .option("--agent <id>", "Agent id for resolving the default session store")

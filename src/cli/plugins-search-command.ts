@@ -78,7 +78,7 @@ export async function runPluginsSearchCommand(
     Array.isArray(queryParts) ? queryParts.join(" ") : queryParts,
   );
   if (!query) {
-    runtime.error("Usage: openclaw plugins search <query>");
+    runtime.error("Usage: kova plugins search <query>");
     return runtime.exit(1);
   }
 

@@ -118,7 +118,7 @@ export function resolvePreferredOpenClawTmpDir(
         }
         throw chmodErr;
       }
-      warn(`[openclaw] tightened permissions on temp dir: ${candidatePath}`);
+      warn(`[kova] tightened permissions on temp dir: ${candidatePath}`);
       return resolveDirState(candidatePath) === "available";
     } catch {
       return false;

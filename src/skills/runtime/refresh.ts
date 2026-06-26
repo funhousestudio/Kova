@@ -98,13 +98,13 @@ export const DEFAULT_SKILLS_WATCH_IGNORED: RegExp[] = [
 function resolveWatchTargets(workspaceDir: string, config?: OpenClawConfig): WatchTarget[] {
   const baseRoots: Array<{ path: string; source: string }> = [];
   if (workspaceDir.trim()) {
-    baseRoots.push({ path: path.join(workspaceDir, "skills"), source: "openclaw-workspace" });
+    baseRoots.push({ path: path.join(workspaceDir, "skills"), source: "kova-workspace" });
     baseRoots.push({
       path: path.join(workspaceDir, ".agents", "skills"),
       source: "agents-skills-project",
     });
   }
-  baseRoots.push({ path: path.join(CONFIG_DIR, "skills"), source: "openclaw-managed" });
+  baseRoots.push({ path: path.join(CONFIG_DIR, "skills"), source: "kova-managed" });
   baseRoots.push({
     path: path.join(os.homedir(), ".agents", "skills"),
     source: "agents-skills-personal",
@@ -346,7 +346,7 @@ function isTrustedSymlinkSkillTarget(
   targetRealPath: string,
   allowedSymlinkTargetRealPaths: readonly string[],
 ): boolean {
-  if (source === "openclaw-managed" || source === "agents-skills-personal") {
+  if (source === "kova-managed" || source === "agents-skills-personal") {
     return true;
   }
   return (
