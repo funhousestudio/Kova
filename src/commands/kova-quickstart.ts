@@ -4,8 +4,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { cancel, intro, outro, select, text, isCancel } from "@clack/prompts";
 import { theme } from "../../packages/terminal-core/src/theme.js";
-import { appendActionLog, ensureKovaDirs, kovaDir } from "../infra/kova-local-storage.js";
 import { formatCliCommand } from "../cli/command-format.js";
+import { appendActionLog, ensureKovaDirs, kovaDir } from "../infra/kova-local-storage.js";
 
 type QuickstartResult =
   | { ok: true; configPath: string }
@@ -76,9 +76,10 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
       message: `API key de ${providerName} (se guarda solo en tu máquina):`,
       placeholder: "sk-...",
       validate: (v) => {
-        if (!v.trim()) {
+        if (!(v ?? "").trim()) {
           return "Necesitás ingresar una API key para continuar.";
         }
+        return undefined;
       },
     });
     if (isCancel(keyResult)) {
