@@ -1,6 +1,7 @@
 // tsdown config defines package build entrypoints and output options.
 import fs from "node:fs";
 import path from "node:path";
+import { viteAliasPlugin } from "rolldown/experimental";
 import { defineConfig, type UserConfig } from "tsdown";
 import {
   collectBundledPluginBuildEntries,
@@ -111,8 +112,14 @@ function buildInputOptions(options: InputOptionsArg): InputOptionsReturn {
     return SUPPRESSED_EVAL_WARNING_PATHS.some((pathLocal) => haystack.includes(pathLocal));
   }
 
+  // Bridge @kova/* → @openclaw/* at build time so KOVA plugin code can use either prefix.
+  const kovaAliasPlugin = viteAliasPlugin({
+    entries: [{ find: /^@kova\//, replacement: "@openclaw/" }],
+  });
+
   return {
     ...options,
+    plugins: [...(Array.isArray(options.plugins) ? options.plugins : []), kovaAliasPlugin],
     external(id: string, parentId: string | undefined, isResolved: boolean) {
       return (
         shouldNeverBundleDependency(id) ||
