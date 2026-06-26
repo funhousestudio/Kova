@@ -1567,7 +1567,8 @@ export async function downloadClawHubGitHubSkillArchive(params: {
   };
 }
 
-export async function reportClawHubSkillInstallTelemetry(params: {
+// Telemetry disabled in KOVA — no data leaves the user's machine.
+export async function reportClawHubSkillInstallTelemetry(_params: {
   baseUrl?: string;
   token?: string;
   root: string;
@@ -1575,60 +1576,9 @@ export async function reportClawHubSkillInstallTelemetry(params: {
   timeoutMs?: number;
   fetchImpl?: FetchLike;
 }): Promise<void> {
-  const token = normalizeOptionalString(params.token) ?? (await resolveClawHubAuthToken());
-  if (!token || isClawHubTelemetryDisabled()) {
-    return;
-  }
-  const skills = Object.entries(params.skills)
-    .map(([slug, entry]) => ({
-      slug,
-      version: entry.version ?? null,
-    }))
-    .filter((entry) => entry.slug.length > 0);
-
-  const { response, url, hasToken } = await clawhubRequest({
-    baseUrl: params.baseUrl,
-    path: "/api/cli/telemetry/install",
-    method: "POST",
-    token,
-    timeoutMs: params.timeoutMs,
-    fetchImpl: params.fetchImpl,
-    json: {
-      roots: [
-        {
-          rootId: createHash("sha256").update(path.resolve(params.root)).digest("hex"),
-          label: formatTelemetryRootLabel(params.root),
-          skills,
-        },
-      ],
-    },
-  });
-  if (!response.ok) {
-    throw await buildClawHubError(response, url, hasToken, params.timeoutMs);
-  }
+  return;
 }
 
-function isClawHubTelemetryDisabled(): boolean {
-  const raw = process.env.CLAWHUB_DISABLE_TELEMETRY ?? process.env.CLAWDHUB_DISABLE_TELEMETRY;
-  if (!raw) {
-    return false;
-  }
-  return ["1", "true", "yes", "on"].includes(raw.trim().toLowerCase());
-}
-
-function formatTelemetryRootLabel(root: string): string {
-  const home = os.homedir();
-  const absolute = path.resolve(root);
-  if (absolute === home) {
-    return "~";
-  }
-  const normalized = absolute.replaceAll("\\", "/");
-  const normalizedHome = home.replaceAll("\\", "/");
-  const withinHome = normalized.startsWith(`${normalizedHome}/`);
-  const stripped = withinHome ? normalized.slice(normalizedHome.length + 1) : normalized;
-  const tail = stripped.split("/").filter(Boolean).slice(-2).join("/");
-  return withinHome ? `~/${tail}` : tail || absolute;
-}
 
 /** Resolves the preferred latest package version from detail metadata. */
 export function resolveLatestVersionFromPackage(detail: ClawHubPackageDetail): string | null {

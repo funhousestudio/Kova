@@ -1,19 +1,20 @@
 {
-  "name": "openclaw",
+  "name": "kova",
   "version": "2026.6.10",
-  "description": "Multi-channel AI gateway with extensible messaging integrations",
-  "keywords": [],
-  "homepage": "https://github.com/openclaw/openclaw#readme",
+  "description": "KOVA — Agente de IA autónomo by Nexova. Gateway multi-canal, privado, cerebro intercambiable.",
+  "keywords": ["ai", "agent", "nexova", "kova", "local-ai", "llama", "autonomous"],
+  "homepage": "https://github.com/nexova/kova#readme",
   "bugs": {
-    "url": "https://github.com/openclaw/openclaw/issues"
+    "url": "https://github.com/nexova/kova/issues"
   },
   "license": "MIT",
-  "author": "",
+  "author": "Nexova (https://nexova.ai)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openclaw/openclaw.git"
+    "url": "git+https://github.com/nexova/kova.git"
   },
   "bin": {
+    "kova": "openclaw.mjs",
     "openclaw": "openclaw.mjs"
   },
   "directories": {
