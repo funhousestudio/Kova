@@ -30,18 +30,18 @@ function pushPrefixed(out: string[], value: string): void {
 export function formatCliFailureLines(options: FormatCliFailureOptions): string[] {
   // Default output stays terse; stack traces require explicit debug intent.
   const env = options.env ?? process.env;
-  const lines = [`[kova] ${options.title}`, `[kova] Reason: ${formatErrorMessage(options.error)}`];
+  const lines = [`[kova] ${options.title}`, `[kova] Razón: ${formatErrorMessage(options.error)}`];
 
   if (shouldShowStack(options.argv, env)) {
     lines.push("[kova] Stack:");
     pushPrefixed(lines, formatUncaughtError(options.error));
   } else {
-    lines.push("[kova] Debug: set OPENCLAW_DEBUG=1 to include the stack trace.");
+    lines.push("[kova] Debug: activá OPENCLAW_DEBUG=1 para ver el stack trace.");
   }
 
   if (options.includeDoctorHint !== false) {
-    lines.push(`[kova] Try: ${formatCliCommand("kova doctor", env)}`);
+    lines.push(`[kova] Intentá: ${formatCliCommand("kova doctor", env)}`);
   }
-  lines.push(`[kova] Help: ${formatCliCommand("kova --help", env)}`);
+  lines.push(`[kova] Ayuda: ${formatCliCommand("kova --help", env)}`);
   return lines;
 }

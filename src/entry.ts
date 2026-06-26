@@ -164,7 +164,7 @@ export async function tryHandleRootHelpFastPath(
     deps.onError ??
     ((error: unknown) => {
       console.error(
-        "[kova] Failed to display help:",
+        "[kova] Error al mostrar la ayuda:",
         error instanceof Error ? (error.stack ?? error.message) : error,
       );
       process.exitCode = 1;
@@ -292,7 +292,7 @@ async function runMainOrRootHelp(argv: string[]): Promise<void> {
   } catch (error) {
     const { formatCliFailureLines } = await import("./cli/failure-output.js");
     for (const line of formatCliFailureLines({
-      title: "Could not start the CLI.",
+      title: "No se pudo iniciar KOVA.",
       error,
       argv,
     })) {

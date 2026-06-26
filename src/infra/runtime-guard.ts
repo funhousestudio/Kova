@@ -121,11 +121,11 @@ export function assertSupportedRuntime(
 
   runtime.error(
     [
-      "kova requires Node >=22.19.0.",
-      `Detected: ${runtimeLabel} (exec: ${execLabel}).`,
-      `PATH searched: ${details.pathEnv}`,
-      "Install Node: https://nodejs.org/en/download",
-      "Upgrade Node and re-run kova.",
+      "kova requiere Node >=22.19.0.",
+      `Detectado: ${runtimeLabel} (exec: ${execLabel}).`,
+      `PATH buscado: ${details.pathEnv}`,
+      "Instalar Node: https://nodejs.org/en/download",
+      "Actualizá Node y volvé a correr kova.",
     ].join("\n"),
   );
   runtime.exit(1);

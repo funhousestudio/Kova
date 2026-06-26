@@ -22,22 +22,22 @@ export function registerSetupCommand(program: Command): void {
     )
     .option(
       "--workspace <dir>",
-      "Agent workspace directory (default: ~/.openclaw/workspace; stored as agents.defaults.workspace)",
+      "Directorio de workspace del agente (por defecto: ~/.kova/workspace)",
     )
-    .option("--wizard", "Run interactive onboarding", false)
-    .option("--non-interactive", "Run onboarding without prompts", false)
+    .option("--wizard", "Ejecutar onboarding interactivo completo", false)
+    .option("--non-interactive", "Ejecutar onboarding sin prompts", false)
     .option(
       "--accept-risk",
-      "Acknowledge that agents are powerful and full system access is risky (required for --non-interactive)",
+      "Confirmar que los agentes tienen acceso al sistema (requerido para --non-interactive)",
       false,
     )
-    .option("--mode <mode>", "Onboard mode: local|remote")
-    .option("--import-from <provider>", "Migration provider to run during onboarding")
-    .option("--import-source <path>", "Source agent home for --import-from")
-    .option("--import-secrets", "Import supported secrets during onboarding migration", false)
-    .option("--remote-url <url>", "Remote Gateway WebSocket URL")
-    .option("--remote-token <token>", "Remote Gateway token (optional)")
-    .option("--advanced", "Skip quickstart; run silent baseline setup (for developers)", false)
+    .option("--mode <mode>", "Modo de onboarding: local|remote")
+    .option("--import-from <provider>", "Proveedor de migración")
+    .option("--import-source <path>", "Directorio origen para --import-from")
+    .option("--import-secrets", "Importar credenciales durante la migración", false)
+    .option("--remote-url <url>", "URL WebSocket del Gateway remoto")
+    .option("--remote-token <token>", "Token del Gateway remoto (opcional)")
+    .option("--advanced", "Saltar quickstart; setup silencioso para desarrolladores", false)
     .action(async (opts, command) => {
       const { defaultRuntime } = await import("../../runtime.js");
       await runCommandWithRuntime(defaultRuntime, async () => {
