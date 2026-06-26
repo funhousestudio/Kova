@@ -278,3 +278,6 @@ export function definePluginEntry({
     register,
   };
 }
+
+// Kova* type aliases — re-exported so plugin authors can use KovaPluginApi etc.
+export type * from "./kova-types.js";
