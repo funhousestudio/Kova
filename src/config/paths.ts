@@ -3,8 +3,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { resolveHomeRelativePath, resolveRequiredHomeDir } from "../infra/home-dir.js";
+import { applyKovaEnvBridge } from "../infra/kova-env-bridge.js";
 import { parseTcpPort } from "../infra/tcp-port.js";
 import type { OpenClawConfig } from "./types.js";
+
+// Apply bridge at module load so STATE_DIR/CONFIG_PATH constants pick up KOVA_* vars.
+applyKovaEnvBridge(process.env);
 
 /**
  * Nix mode detection: When OPENCLAW_NIX_MODE=1, the gateway is running under Nix.

@@ -1,6 +1,7 @@
 // Normalizes env flag values and logs env warnings lazily.
 import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
 import type { SubsystemLogger } from "../logging/subsystem.js";
+import { applyKovaEnvBridge } from "./kova-env-bridge.js";
 
 let log: SubsystemLogger | null = null;
 let logPromise: Promise<SubsystemLogger> | null = null;
@@ -116,5 +117,6 @@ export function isVitestRuntimeEnv(env: NodeJS.ProcessEnv = process.env): boolea
 
 /** Applies process-wide env normalization before runtime configuration is read. */
 export function normalizeEnv(): void {
+  applyKovaEnvBridge(process.env);
   normalizeZaiEnv(process.env);
 }
