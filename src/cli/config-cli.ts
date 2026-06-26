@@ -2692,4 +2692,48 @@ export function registerConfigCli(program: Command) {
     .action(async (opts) => {
       await runConfigValidate({ json: Boolean(opts.json) });
     });
+
+  cmd
+    .command("mode")
+    .description("Mostrar o cambiar el modo de autonomía de KOVA")
+    .argument("[mode]", "Modo: safe, autonomous, unlimited")
+    .addHelpText(
+      "after",
+      () =>
+        `\n${theme.heading("Modos disponibles:")}\n` +
+        `  ${theme.command("safe")}        Pide permiso antes de acciones irreversibles (por defecto)\n` +
+        `  ${theme.command("autonomous")}  Actúa solo y loggea todo en ~/.kova/logs/\n` +
+        `  ${theme.command("unlimited")}   Sin confirmaciones — acceso total\n\n` +
+        `${theme.heading("Ejemplos:")}\n` +
+        `  ${theme.command("kova config mode")}            Ver el modo actual\n` +
+        `  ${theme.command("kova config mode autonomous")}  Cambiar a modo autónomo\n\n`,
+    )
+    .action(async (modeArg: string | undefined) => {
+      const { readKovaMode, writeKovaMode, AUTONOMY_MODES, AUTONOMY_MODE_LABELS } =
+        await import("../infra/kova-autonomy-mode.js");
+      if (!modeArg) {
+        const current = await readKovaMode();
+        console.log(
+          `${theme.muted("Modo actual:")} ${theme.info(current)} — ${AUTONOMY_MODE_LABELS[current]}`,
+        );
+        console.log(
+          theme.muted(
+            `\nCambiar con: ${formatCliCommand(`kova config mode <${AUTONOMY_MODES.join("|")}>`)}`,
+          ),
+        );
+        return;
+      }
+      if (!AUTONOMY_MODES.includes(modeArg as (typeof AUTONOMY_MODES)[number])) {
+        console.error(
+          `${theme.error("Error:")} modo inválido "${modeArg}". Opciones: ${AUTONOMY_MODES.join(", ")}`,
+        );
+        process.exitCode = 1;
+        return;
+      }
+      const validMode = modeArg as (typeof AUTONOMY_MODES)[number];
+      await writeKovaMode(validMode);
+      console.log(
+        `${theme.success("✓")} Modo cambiado a ${theme.info(validMode)} — ${AUTONOMY_MODE_LABELS[validMode]}`,
+      );
+    });
 }

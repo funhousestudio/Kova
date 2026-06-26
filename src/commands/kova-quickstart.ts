@@ -1,10 +1,17 @@
 // KOVA Quickstart — onboarding simplificado para usuarios no técnicos.
-// Hace 3 preguntas y escribe la config mínima en ~/.kova/kova.json.
+// Hace 5 preguntas y escribe la config mínima en ~/.kova/kova.json.
 import fs from "node:fs/promises";
 import path from "node:path";
 import { cancel, intro, outro, select, text, confirm, isCancel } from "@clack/prompts";
 import { theme } from "../../packages/terminal-core/src/theme.js";
 import { formatCliCommand } from "../cli/command-format.js";
+import {
+  AUTONOMY_MODE_LABELS,
+  AUTONOMY_MODES,
+  MODE_TO_EXEC_POLICY,
+  writeKovaMode,
+  type KovaAutonomyMode,
+} from "../infra/kova-autonomy-mode.js";
 import { appendActionLog, ensureKovaDirs, kovaDir } from "../infra/kova-local-storage.js";
 
 type QuickstartResult =
@@ -47,7 +54,7 @@ const CHANNEL_HINTS: Record<string, string> = {
 export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
   console.log();
   intro(theme.heading("🤖 KOVA — Configuración inicial"));
-  console.log(theme.muted("  Vamos a configurar KOVA en 3 pasos. Podés cambiarlo después.\n"));
+  console.log(theme.muted("  Vamos a configurar KOVA en 5 pasos. Podés cambiarlo después.\n"));
 
   // Step 1: AI model
   const aiChoice = await select({
@@ -105,7 +112,21 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
     return { ok: false, reason: "cancelled" };
   }
 
-  // Step 4: semantic memory (optional)
+  // Step 4: autonomy mode
+  const modeChoice = await select({
+    message: "¿Cómo querés que actúe KOVA?",
+    options: AUTONOMY_MODES.map((mode) => ({
+      value: mode,
+      label: AUTONOMY_MODE_LABELS[mode],
+    })),
+  });
+  if (isCancel(modeChoice)) {
+    cancel("Configuración cancelada.");
+    return { ok: false, reason: "cancelled" };
+  }
+  const autonomyMode = modeChoice as KovaAutonomyMode;
+
+  // Step 5: semantic memory (optional)
   const wantsMemory = await confirm({
     message: "¿Activar memoria semántica profunda? (LanceDB — recuerda todo entre sesiones)",
     initialValue: false,
@@ -156,6 +177,14 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
   const newConfig = {
     ...existingConfig,
     agent: agentConfig,
+    tools: {
+      ...((existingConfig.tools as Record<string, unknown>) ?? {}),
+      exec: {
+        ...(((existingConfig.tools as Record<string, unknown>)?.exec as Record<string, unknown>) ??
+          {}),
+        mode: MODE_TO_EXEC_POLICY[autonomyMode],
+      },
+    },
     ...(memoryPluginConfig
       ? {
           plugins: {
@@ -167,12 +196,15 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
   };
 
   await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2) + "\n", "utf8");
+  // Persist the human-readable mode name separately (not in schema-validated kova.json).
+  await writeKovaMode(autonomyMode);
 
   await appendActionLog({
     ts: Date.now(),
     type: "quickstart",
     ai: aiChoice as string,
     channel: channelChoice as string,
+    autonomyMode,
   });
 
   const channelHint = CHANNEL_HINTS[channelChoice as string] ?? "";
@@ -181,10 +213,12 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
     : "";
   outro(
     `${theme.success("✓ KOVA configurado")} — config en ${theme.info(configPath)}\n\n` +
+      `  ${theme.muted("Modo:")}            ${theme.info(AUTONOMY_MODE_LABELS[autonomyMode])}\n` +
       `  ${theme.muted("Arrancar KOVA:")}  ${formatCliCommand("kova gateway start --daemon")}\n` +
       (channelHint ? `  ${theme.muted("Siguiente paso:")} ${channelHint}\n` : "") +
       memoryNote +
-      `\n  ${theme.muted("Podés editar la config en:")} ${theme.info(configPath)}`,
+      `\n  ${theme.muted("Cambiar modo:")}   ${formatCliCommand("kova config mode")}` +
+      `\n  ${theme.muted("Editar config:")}  ${theme.info(configPath)}`,
   );
 
   return { ok: true, configPath };
