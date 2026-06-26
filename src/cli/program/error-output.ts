@@ -22,13 +22,13 @@ function quote(value: string): string {
 
 function resolveHelpCommand(argv: string[] | undefined, options?: { root?: boolean }): string {
   if (options?.root || !argv) {
-    return formatCliCommand("openclaw --help");
+    return formatCliCommand("kova --help");
   }
   const commandPath = getCommandPathWithRootOptions(argv, 2);
   if (commandPath.length === 0) {
-    return formatCliCommand("openclaw --help");
+    return formatCliCommand("kova --help");
   }
-  return formatCliCommand(`openclaw ${commandPath.join(" ")} --help`);
+  return formatCliCommand(`kova ${commandPath.join(" ")} --help`);
 }
 
 function lines(...items: Array<string | undefined>): string {
@@ -56,7 +56,7 @@ export function formatCliParseErrorOutput(
       theme.error(`OpenClaw does not know the command ${quote(command)}.`),
       formatCliCommandSuggestions(command),
       formatHelpHint(options.argv, { root: true }),
-      `${theme.muted("Plugin command?")} ${theme.command(formatCliCommand("openclaw plugins list"))}`,
+      `${theme.muted("Plugin command?")} ${theme.command(formatCliCommand("kova plugins list"))}`,
       formatDocsHint(),
     );
   }

@@ -9,7 +9,7 @@ import {
 import { formatErrorMessage } from "../infra/errors.js";
 import { defaultRuntime, writeRuntimeJson, type RuntimeEnv } from "../runtime.js";
 
-/** Options accepted by `openclaw plugins search`. */
+/** Options accepted by `kova plugins search`. */
 export type PluginsSearchOptions = {
   json?: boolean;
   limit?: number;

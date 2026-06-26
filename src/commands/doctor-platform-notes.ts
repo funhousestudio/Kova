@@ -80,7 +80,7 @@ export async function collectMacStaleOpenClawUpdateLaunchdJobsWarning(deps?: {
     }),
     "- Fix after confirming no update is running:",
     "  launchctl remove <label>",
-    `  ${formatCliCommand("openclaw gateway restart")}`,
+    `  ${formatCliCommand("kova gateway restart")}`,
   ].join("\n");
 }
 

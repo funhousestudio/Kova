@@ -415,7 +415,7 @@ export function sessionTranscriptIssueToHealthFinding(
     message: `Session transcript has legacy branch or provider metadata that can be cleaned up.${metadata}`,
     path: issue.filePath,
     fixHint:
-      "To clean up the advisory artifact, run `openclaw doctor --fix` to rewrite affected transcripts to their active branch.",
+      "To clean up the advisory artifact, run `kova doctor --fix` to rewrite affected transcripts to their active branch.",
   };
 }
 
@@ -475,7 +475,7 @@ export async function noteSessionTranscriptHealth(params?: {
     lines.push(`- ...and ${broken.length - 20} more.`);
   }
   if (!shouldRepair) {
-    lines.push('- Run "openclaw doctor --fix" to rewrite affected files to their active branch.');
+    lines.push('- Run "kova doctor --fix" to rewrite affected files to their active branch.');
   } else if (repairedCount > 0) {
     lines.push(`- Repaired ${repairedCount} transcript file${repairedCount === 1 ? "" : "s"}.`);
   }

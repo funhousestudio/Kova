@@ -616,7 +616,7 @@ function buildDocsSection(params: {
     sourcePath
       ? "If docs are silent/stale, say so and inspect local source."
       : "If docs are silent/stale, say so and inspect GitHub source.",
-    "Diagnosing issues: run `openclaw status` when possible; ask user only if blocked.",
+    "Diagnosing issues: run `kova status` when possible; ask user only if blocked.",
     "",
   ];
   return lines.filter((line): line is string => line !== undefined);
@@ -1134,7 +1134,7 @@ export function buildAgentSystemPrompt(params: {
       "## OpenClaw Control",
       "Do not invent commands.",
       "Config/restart: prefer `gateway` tool (`config.schema.lookup|get|patch|apply`, `restart`).",
-      "CLI lifecycle only on explicit user request: `openclaw gateway status|restart|start|stop`.",
+      "CLI lifecycle only on explicit user request: `kova gateway status|restart|start|stop`.",
       "`restart`, not stop+start.",
       "",
       ...skillsSection,

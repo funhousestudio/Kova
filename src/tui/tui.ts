@@ -235,7 +235,7 @@ export function resolveGatewayDisconnectState(reason?: string): {
       connectionStatus: `gateway disconnected: ${reasonLabel}`,
       activityStatus: "pairing required: run openclaw devices list",
       pairingHint:
-        "Pairing required. Run `openclaw devices list`, approve your request ID, then reconnect.",
+        "Pairing required. Run `kova devices list`, approve your request ID, then reconnect.",
     };
   }
   return {
@@ -463,7 +463,7 @@ export function scheduleProcessExitAfterTuiReturn(
     });
   const timer = setTimeoutFn(() => {
     try {
-      writeStderr("openclaw tui forcing process exit after return\n");
+      writeStderr("kova tui forcing process exit after return\n");
     } catch {
       // Best effort only; forced exit must not depend on stderr.
     }
@@ -977,7 +977,7 @@ export async function runTui(opts: RunTuiOptions): Promise<TuiResult> {
   const updateHeader = () => {
     const sessionLabel = formatSessionKey(currentSessionKey);
     const agentLabel = formatAgentLabel(currentAgentId);
-    const title = opts.title ?? "openclaw tui";
+    const title = opts.title ?? "kova tui";
     header.setText(
       theme.header(
         `${title} - ${client.connection.url} - agent ${agentLabel} - session ${sessionLabel}`,
@@ -1338,7 +1338,7 @@ export async function runTui(opts: RunTuiOptions): Promise<TuiResult> {
   const deferredFinish = createDeferredTuiFinish();
   const forceExit = () => {
     try {
-      process.stderr.write("openclaw tui forcing exit\n");
+      process.stderr.write("kova tui forcing exit\n");
     } catch {
       // Best effort only; force exit must not depend on stderr.
     }
@@ -1369,7 +1369,7 @@ export async function runTui(opts: RunTuiOptions): Promise<TuiResult> {
       .catch((err: unknown) => {
         if (!isTuiTerminalLossError(err)) {
           try {
-            process.stderr.write(`openclaw tui shutdown failed: ${String(err)}\n`);
+            process.stderr.write(`kova tui shutdown failed: ${String(err)}\n`);
           } catch {
             // Best effort only; exit must still complete.
           }

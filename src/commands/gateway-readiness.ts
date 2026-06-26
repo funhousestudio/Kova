@@ -138,9 +138,9 @@ function readinessFailureReason(status: DaemonStatus): string {
 
 function printGatewayNotReadyHints(runtime: RuntimeEnv, reason: string): void {
   runtime.log(reason);
-  runtime.log("Run `openclaw gateway status --deep` for details.");
-  runtime.log("Run `openclaw gateway start` to start a managed gateway.");
-  runtime.log("Run `openclaw gateway run` for a foreground gateway.");
+  runtime.log("Run `kova gateway status --deep` for details.");
+  runtime.log("Run `kova gateway start` to start a managed gateway.");
+  runtime.log("Run `kova gateway run` for a foreground gateway.");
 }
 
 async function confirmRecovery(params: {

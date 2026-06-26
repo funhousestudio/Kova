@@ -43,8 +43,8 @@ export function formatCliFailureLines(options: FormatCliFailureOptions): string[
   }
 
   if (options.includeDoctorHint !== false) {
-    lines.push(`[openclaw] Try: ${formatCliCommand("openclaw doctor", env)}`);
+    lines.push(`[openclaw] Try: ${formatCliCommand("kova doctor", env)}`);
   }
-  lines.push(`[openclaw] Help: ${formatCliCommand("openclaw --help", env)}`);
+  lines.push(`[openclaw] Help: ${formatCliCommand("kova --help", env)}`);
   return lines;
 }

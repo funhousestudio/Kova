@@ -25,7 +25,7 @@ import {
 
 export type ResetScope = "config" | "config+creds+sessions" | "full";
 
-/** CLI options accepted by `openclaw reset`. */
+/** CLI options accepted by `kova reset`. */
 export type ResetOptions = {
   scope?: ResetScope;
   yes?: boolean;
@@ -58,7 +58,7 @@ async function stopGatewayIfRunning(runtime: RuntimeEnv) {
 }
 
 function logBackupRecommendation(runtime: RuntimeEnv) {
-  runtime.log(`Recommended first: ${formatCliCommand("openclaw backup create")}`);
+  runtime.log(`Recommended first: ${formatCliCommand("kova backup create")}`);
 }
 
 /** Runs the reset command for config, credential/session, or full state scopes. */
@@ -150,7 +150,7 @@ export async function resetCommand(runtime: RuntimeEnv, opts: ResetOptions) {
     for (const dir of sessionDirs) {
       await removePath(dir, runtime, { dryRun, label: dir });
     }
-    runtime.log(`Next: ${formatCliCommand("openclaw onboard --install-daemon")}`);
+    runtime.log(`Next: ${formatCliCommand("kova onboard --install-daemon")}`);
     return;
   }
 
@@ -164,6 +164,6 @@ export async function resetCommand(runtime: RuntimeEnv, opts: ResetOptions) {
     // Workspace attestations live beside workspace dirs and can outlive the
     // workspace itself, so full reset cleans both surfaces.
     await removeWorkspaceAttestationPaths(workspaceDirs, runtime, { dryRun });
-    runtime.log(`Next: ${formatCliCommand("openclaw onboard --install-daemon")}`);
+    runtime.log(`Next: ${formatCliCommand("kova onboard --install-daemon")}`);
   }
 }

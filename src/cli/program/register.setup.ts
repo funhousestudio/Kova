@@ -9,16 +9,17 @@ import { hasExplicitOptions } from "../command-options.js";
 export function registerSetupCommand(program: Command): void {
   program
     .command("setup")
-    .description("Create baseline config/workspace files; use --wizard for full onboarding")
+    .description("Configure KOVA interactively (choose your AI and channel)")
     .addHelpText(
       "after",
       () =>
-        `\n${theme.heading("Examples:")}\n` +
-        `  ${theme.command("openclaw setup")}\n` +
-        `    ${theme.muted("Create config, workspace, and session folders.")}\n` +
-        `  ${theme.command("openclaw setup --wizard")}\n` +
-        `    ${theme.muted("Run full onboarding for auth, models, Gateway, and channels.")}\n\n` +
-        `${theme.muted("Docs:")} ${formatDocsLink("/cli/setup", "docs.openclaw.ai/cli/setup")}\n`,
+        `\n${theme.heading("Ejemplos:")}\n` +
+        `  ${theme.command("kova setup")}\n` +
+        `    ${theme.muted("Configuración guiada: elige tu IA y canal de chat.")}\n` +
+        `  ${theme.command("kova setup --wizard")}\n` +
+        `    ${theme.muted("Wizard completo: auth, modelos, Gateway y canales.")}\n` +
+        `  ${theme.command("kova setup --advanced")}\n` +
+        `    ${theme.muted("Setup silencioso para desarrolladores (sin prompts).")}\n\n`,
     )
     .option(
       "--workspace <dir>",
@@ -37,6 +38,7 @@ export function registerSetupCommand(program: Command): void {
     .option("--import-secrets", "Import supported secrets during onboarding migration", false)
     .option("--remote-url <url>", "Remote Gateway WebSocket URL")
     .option("--remote-token <token>", "Remote Gateway token (optional)")
+    .option("--advanced", "Skip quickstart; run silent baseline setup (for developers)", false)
     .action(async (opts, command) => {
       const { defaultRuntime } = await import("../../runtime.js");
       await runCommandWithRuntime(defaultRuntime, async () => {
@@ -68,6 +70,16 @@ export function registerSetupCommand(program: Command): void {
             },
             defaultRuntime,
           );
+          return;
+        }
+        // No flags: run the KOVA quickstart for non-technical users.
+        // Pass --advanced to skip quickstart and run the baseline silent setup instead.
+        if (!opts.advanced) {
+          const { kovaQuickstartCommand } = await import("../../commands/kova-quickstart.js");
+          const result = await kovaQuickstartCommand();
+          if (!result.ok && result.reason === "error") {
+            process.exitCode = 1;
+          }
           return;
         }
         const { setupCommand } = await import("../../commands/setup.js");

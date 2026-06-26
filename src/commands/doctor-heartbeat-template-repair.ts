@@ -165,7 +165,7 @@ export async function maybeRepairHeartbeatTemplate(params: {
     note(
       [
         `${shortenHomePath(heartbeatPath)} contains an older heartbeat documentation template.`,
-        'Run "openclaw doctor --fix" to replace it with the clean heartbeat template.',
+        'Run "kova doctor --fix" to replace it with the clean heartbeat template.',
       ].join("\n"),
       "Heartbeat template",
     );

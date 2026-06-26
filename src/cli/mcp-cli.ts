@@ -336,7 +336,7 @@ async function collectMcpDoctorIssues(params: {
           issues.push(
             issue(
               "warning",
-              `OAuth credentials are not authorized; run ${formatCliCommand(`openclaw mcp login ${name}`)}`,
+              `OAuth credentials are not authorized; run ${formatCliCommand(`kova mcp login ${name}`)}`,
             ),
           );
         }
@@ -607,7 +607,7 @@ export function registerMcpCli(program: Command) {
         });
       } catch (err) {
         defaultRuntime.error(
-          `MCP server failed to start: ${formatErrorMessage(err)}. Run ${formatCliCommand("openclaw mcp list")} to inspect configured servers.`,
+          `MCP server failed to start: ${formatErrorMessage(err)}. Run ${formatCliCommand("kova mcp list")} to inspect configured servers.`,
         );
         defaultRuntime.exit(1);
       }
@@ -629,7 +629,7 @@ export function registerMcpCli(program: Command) {
       const names = Object.keys(loaded.mcpServers).toSorted();
       if (names.length === 0) {
         defaultRuntime.log(
-          `No OpenClaw-managed MCP servers configured in ${loaded.path}. Add one with ${formatCliCommand('openclaw mcp set <name> \'{"command":"uvx","args":["context7-mcp"]}\'')}.`,
+          `No OpenClaw-managed MCP servers configured in ${loaded.path}. Add one with ${formatCliCommand('kova mcp set <name> \'{"command":"uvx","args":["context7-mcp"]}\'')}.`,
         );
         defaultRuntime.log(OPENCLAW_MCP_REGISTRY_SCOPE_NOTE);
         return;
@@ -655,7 +655,7 @@ export function registerMcpCli(program: Command) {
       const value = name ? loaded.mcpServers[name] : loaded.mcpServers;
       if (name && !value) {
         fail(
-          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       if (opts.json) {
@@ -731,12 +731,12 @@ export function registerMcpCli(program: Command) {
         : loaded.mcpServers;
       if (!servers) {
         fail(
-          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       if (name && loaded.mcpServers[name]?.enabled === false) {
         fail(
-          `MCP server "${name}" is disabled in ${loaded.path}. Run ${formatCliCommand(`openclaw mcp configure ${name} --enable`)} before probing it.`,
+          `MCP server "${name}" is disabled in ${loaded.path}. Run ${formatCliCommand(`kova mcp configure ${name} --enable`)} before probing it.`,
         );
       }
       const runtime = createSessionMcpRuntime({
@@ -783,7 +783,7 @@ export function registerMcpCli(program: Command) {
         : loaded.mcpServers;
       if (!selected) {
         fail(
-          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       const servers = await Promise.all(
@@ -814,7 +814,7 @@ export function registerMcpCli(program: Command) {
       }
       if (servers.length === 0) {
         defaultRuntime.log(
-          `No MCP servers configured in ${loaded.path}. Add one with ${formatCliCommand("openclaw mcp add <name> --command <command>")}.`,
+          `No MCP servers configured in ${loaded.path}. Add one with ${formatCliCommand("kova mcp add <name> --command <command>")}.`,
         );
         return;
       }
@@ -983,7 +983,7 @@ export function registerMcpCli(program: Command) {
         defaultRuntime.log(`Saved MCP server "${name}" to ${result.path}.`);
         if (server.auth === "oauth") {
           defaultRuntime.log(
-            `Run ${formatCliCommand(`openclaw mcp login ${name}`)} to authorize this MCP server.`,
+            `Run ${formatCliCommand(`kova mcp login ${name}`)} to authorize this MCP server.`,
           );
         }
       },
@@ -1041,7 +1041,7 @@ export function registerMcpCli(program: Command) {
       }
       if (!result.updated) {
         fail(
-          `No MCP server named "${name}" in ${result.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${result.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       defaultRuntime.log(`Updated MCP tool selection for "${name}" in ${result.path}.`);
@@ -1106,7 +1106,7 @@ export function registerMcpCli(program: Command) {
         const current = loaded.mcpServers[name];
         if (!current) {
           fail(
-            `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+            `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
           );
         }
         const next = { ...current };
@@ -1213,7 +1213,7 @@ export function registerMcpCli(program: Command) {
         }
         if (!result.updated) {
           fail(
-            `No MCP server named "${name}" in ${result.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+            `No MCP server named "${name}" in ${result.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
           );
         }
         if (clearOAuthCredentials) {
@@ -1236,7 +1236,7 @@ export function registerMcpCli(program: Command) {
       const server = loaded.mcpServers[name];
       if (!server) {
         fail(
-          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       if (server.auth !== "oauth") {
@@ -1268,7 +1268,7 @@ export function registerMcpCli(program: Command) {
           defaultRuntime.log(`Open this URL to authorize "${name}":`);
           defaultRuntime.log(url.toString());
           defaultRuntime.log(
-            `After approval, run ${formatCliCommand(`openclaw mcp login ${name} --code <code>`)}.`,
+            `After approval, run ${formatCliCommand(`kova mcp login ${name} --code <code>`)}.`,
           );
         },
       });
@@ -1289,7 +1289,7 @@ export function registerMcpCli(program: Command) {
       const server = loaded.mcpServers[name];
       if (!server) {
         fail(
-          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${loaded.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       const resolved = resolveMcpTransportConfig(name, server);
@@ -1331,7 +1331,7 @@ export function registerMcpCli(program: Command) {
       }
       if (!result.removed) {
         fail(
-          `No MCP server named "${name}" in ${result.path}. Run ${formatCliCommand("openclaw mcp list")} to see configured servers.`,
+          `No MCP server named "${name}" in ${result.path}. Run ${formatCliCommand("kova mcp list")} to see configured servers.`,
         );
       }
       if (current) {

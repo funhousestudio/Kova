@@ -968,7 +968,7 @@ function warnIfConfigFromFuture(cfg: OpenClawConfig, logger: Pick<typeof console
     logger.warn(
       [
         `Your OpenClaw config was written by version ${touched}, but this command is running ${VERSION}.`,
-        "Check: `openclaw --version`, `which openclaw`, and `openclaw gateway status --deep`.",
+        "Check: `kova --version`, `which openclaw`, and `kova gateway status --deep`.",
         "If unexpected, update PATH so `openclaw` points to the version you want, or reinstall the Gateway service from that same OpenClaw install.",
       ].join("\n"),
     );

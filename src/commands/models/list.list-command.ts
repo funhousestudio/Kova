@@ -1,4 +1,4 @@
-/** Implementation of `openclaw models list`. */
+/** Implementation of `kova models list`. */
 import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
 import { parseModelRef } from "../../agents/model-selection.js";
 import type { ModelRegistry } from "../../llm/model-registry.js";

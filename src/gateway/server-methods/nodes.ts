@@ -1030,7 +1030,7 @@ export const nodeHandlers: GatewayRequestHandlers = {
       respond(true, rejected, undefined);
     });
   },
-  // Remove a node pairing (CLI: `openclaw nodes remove`). For a device-backed
+  // Remove a node pairing (CLI: `kova nodes remove`). For a device-backed
   // node this revokes the device's `node` role in devices/paired.json and
   // disconnects its node-role sessions: a mixed-role device keeps its row and
   // only loses the `node` role, a node-only device row is deleted. Any matching

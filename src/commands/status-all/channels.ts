@@ -1,4 +1,4 @@
-// Builds channel status rows and account details for `openclaw status --all`.
+// Builds channel status rows and account details for `kova status --all`.
 // This layer stays plugin-generic: channel-specific auth rules live in plugin config/status hooks.
 
 import fs from "node:fs";

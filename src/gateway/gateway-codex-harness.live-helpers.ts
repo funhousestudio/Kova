@@ -167,9 +167,9 @@ export const EXPECTED_CODEX_STATUS_COMMAND_TEXT = [
 export function isExpectedCodexStatusCommandText(text: string): boolean {
   const normalized = text.toLowerCase();
   const mentionsOpenClawStatus =
-    normalized.includes("openclaw is running on") ||
+    normalized.includes("kova is running on") ||
     /openclaw\s+\S+\s+is running on/u.test(normalized) ||
-    normalized.includes("openclaw status:") ||
+    normalized.includes("kova status:") ||
     normalized.includes("status: running on") ||
     normalized.includes("session status: running on");
   const mentionsHarnessSession =

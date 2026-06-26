@@ -29,9 +29,9 @@ export async function requireValidConfigFileSnapshot(
     runtime.error(
       isPluginPackagingRuntimeOutputInvalidConfigSnapshot(snapshot)
         ? `Fix: ${formatPluginPackagingRuntimeOutputRecoveryHint()}`
-        : `Fix: ${formatCliCommand("openclaw doctor --fix")}`,
+        : `Fix: ${formatCliCommand("kova doctor --fix")}`,
     );
-    runtime.error(`Inspect: ${formatCliCommand("openclaw config validate")}`);
+    runtime.error(`Inspect: ${formatCliCommand("kova config validate")}`);
     runtime.exit(1);
     return null;
   }
@@ -47,7 +47,7 @@ export async function requireValidConfigFileSnapshot(
           .slice(0, 3)
           .map((notice) => `- ${formatPluginCompatibilityNotice(notice)}`),
         ...(compatibility.length > 3 ? [`- ... +${compatibility.length - 3} more`] : []),
-        `Review: ${formatCliCommand("openclaw doctor")}`,
+        `Review: ${formatCliCommand("kova doctor")}`,
       ].join("\n"),
     );
   }

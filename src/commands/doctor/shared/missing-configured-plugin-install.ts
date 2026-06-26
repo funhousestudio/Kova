@@ -135,7 +135,7 @@ function appendClawHubRiskAcknowledgementGuidance(params: {
   }
   const sanitizedSpec = sanitizeTerminalText(params.spec);
   const shellSpec = shellQuotePosixArg(sanitizedSpec);
-  return `${params.message} To review and acknowledge this ClawHub package, run \`openclaw plugins install ${shellSpec} --acknowledge-clawhub-risk\` from a trusted shell, then rerun repair.`;
+  return `${params.message} To review and acknowledge this ClawHub package, run \`kova plugins install ${shellSpec} --acknowledge-clawhub-risk\` from a trusted shell, then rerun repair.`;
 }
 
 function shellQuotePosixArg(value: string): string {
@@ -1516,7 +1516,7 @@ async function repairMissingPluginInstalls(params: {
       if (!record || !isInstalledRecordMissingOnDisk(record, env)) {
         continue;
       }
-      const detail = `Skipped package-manager repair for configured plugin "${pluginId}" during package update; rerun "openclaw doctor --fix" after the update completes.`;
+      const detail = `Skipped package-manager repair for configured plugin "${pluginId}" during package update; rerun "kova doctor --fix" after the update completes.`;
       changes.push(detail);
       deferredRepairDetails.push(detail);
     }

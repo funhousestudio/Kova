@@ -124,7 +124,7 @@ export async function noteStalePluginRuntimeSymlinks(
   if (stale.length > MAX_REPORTED) {
     lines.push(`  - ...and ${stale.length - MAX_REPORTED} more`);
   }
-  lines.push("- Repair: run `openclaw doctor --fix` to remove the dangling symlinks.");
+  lines.push("- Repair: run `kova doctor --fix` to remove the dangling symlinks.");
   (options.noteFn ?? note)(lines.join("\n"), "Plugin-runtime symlinks");
 }
 

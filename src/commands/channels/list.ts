@@ -1,4 +1,4 @@
-// Implements `openclaw channels list` across runtime accounts, local config, and catalog-only entries.
+// Implements `kova channels list` across runtime accounts, local config, and catalog-only entries.
 import { formatDocsLink } from "../../../packages/terminal-core/src/links.js";
 import { theme } from "../../../packages/terminal-core/src/theme.js";
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../../agents/agent-scope.js";
@@ -310,7 +310,7 @@ export async function channelsListCommand(
       theme.muted(
         showAll
           ? "- no chat channels found"
-          : "- no configured chat channels (run `openclaw channels list --all` to see installable channels)",
+          : "- no configured chat channels (run `kova channels list --all` to see installable channels)",
       ),
     );
   } else {
@@ -340,7 +340,7 @@ export async function channelsListCommand(
   runtime.log("");
   runtime.log(
     theme.muted(
-      "Model provider usage moved out of `channels list` — see `openclaw status` or `openclaw models list`.",
+      "Model provider usage moved out of `channels list` — see `kova status` or `kova models list`.",
     ),
   );
   runtime.log(`Docs: ${formatDocsLink("/gateway/configuration", "gateway/configuration")}`);

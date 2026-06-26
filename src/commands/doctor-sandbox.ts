@@ -400,7 +400,7 @@ export function legacySandboxRegistryInspectionToHealthFinding(
     message: `Legacy sandbox registry file detected.
 ${formatLegacyRegistryInspectionLine(file)}`,
     path: legacySandboxRegistryInspectionSourcePath(file),
-    fixHint: `Run ${formatCliCommand("openclaw doctor --fix")} to migrate valid entries to SQLite.`,
+    fixHint: `Run ${formatCliCommand("kova doctor --fix")} to migrate valid entries to SQLite.`,
   };
 }
 
@@ -432,7 +432,7 @@ export async function maybeRepairSandboxRegistryFiles(prompter: DoctorPrompter):
       [
         "Legacy sandbox registry files detected.",
         ...legacyFiles.map(formatLegacyRegistryInspectionLine),
-        `Run ${formatCliCommand("openclaw doctor --fix")} to migrate them to SQLite.`,
+        `Run ${formatCliCommand("kova doctor --fix")} to migrate them to SQLite.`,
       ].join("\n"),
       "Sandbox",
     );

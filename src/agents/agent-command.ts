@@ -652,7 +652,7 @@ async function prepareAgentCommandExecution(opts: AgentCommandOpts, runtime: Run
     const knownAgents = listAgentIds(cfg);
     if (!knownAgents.includes(agentIdOverride)) {
       throw new Error(
-        `Unknown agent id "${agentIdOverrideRaw}". Use "${formatCliCommand("openclaw agents list")}" to see configured agents.`,
+        `Unknown agent id "${agentIdOverrideRaw}". Use "${formatCliCommand("kova agents list")}" to see configured agents.`,
       );
     }
   }

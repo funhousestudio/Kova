@@ -45,9 +45,9 @@ export type PostCoreConvergenceResult = {
   installRecords: Record<string, PluginInstallRecord>;
 };
 
-const REPAIR_GUIDANCE = "Run `openclaw update repair` to retry plugin repair.";
+const REPAIR_GUIDANCE = "Run `kova update repair` to retry plugin repair.";
 const inspectGuidance = (pluginId: string) =>
-  `Run \`openclaw plugins inspect ${pluginId} --runtime --json\` for details.`;
+  `Run \`kova plugins inspect ${pluginId} --runtime --json\` for details.`;
 
 async function repairManagedNpmOpenClawPeerLinks(params: {
   env: NodeJS.ProcessEnv;

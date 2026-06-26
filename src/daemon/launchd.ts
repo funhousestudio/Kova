@@ -870,7 +870,7 @@ export async function stopLaunchAgent({
   if (!persistDisable) {
     // Default: bootout only. Removes the job from the current launchd domain without
     // persisting a disable, so KeepAlive auto-recovery survives future crashes and
-    // `openclaw gateway start` re-enables cleanly without a manual `launchctl enable`.
+    // `kova gateway start` re-enables cleanly without a manual `launchctl enable`.
     const bootout = await execLaunchctl(["bootout", serviceTarget]);
     if (bootout.code !== 0 && !isLaunchctlNotLoaded(bootout)) {
       throw new Error(`launchctl bootout failed: ${formatLaunchctlResultDetail(bootout)}`);
@@ -1006,7 +1006,7 @@ async function activateLaunchAgent(params: { env: GatewayServiceEnv; plistPath: 
     domain,
     serviceTarget: `${domain}/${label}`,
     plistPath: params.plistPath,
-    actionHint: "openclaw gateway install --force",
+    actionHint: "kova gateway install --force",
   });
 }
 
@@ -1097,7 +1097,7 @@ async function ensureLaunchAgentLoadedAfterFailure(params: {
       domain: params.domain,
       serviceTarget: params.serviceTarget,
       plistPath: params.plistPath,
-      actionHint: "openclaw gateway start",
+      actionHint: "kova gateway start",
     });
   } catch {
     // Best-effort only. Preserve the original kickstart failure below.
@@ -1159,7 +1159,7 @@ export async function restartLaunchAgent({
     warn,
   });
 
-  // `openclaw gateway restart` is an explicit operator request to bring the
+  // `kova gateway restart` is an explicit operator request to bring the
   // LaunchAgent back, so clear any persisted disabled state before restart.
   await execLaunchctl(["enable", serviceTarget]);
 
@@ -1172,7 +1172,7 @@ export async function restartLaunchAgent({
       domain,
       serviceTarget,
       plistPath,
-      actionHint: "openclaw gateway restart",
+      actionHint: "kova gateway restart",
     });
     writeLaunchAgentActionLine(stdout, "Restarted LaunchAgent", serviceTarget);
     return { outcome: "completed" };
@@ -1194,7 +1194,7 @@ export async function restartLaunchAgent({
     domain,
     serviceTarget,
     plistPath,
-    actionHint: "openclaw gateway restart",
+    actionHint: "kova gateway restart",
   });
   writeLaunchAgentActionLine(stdout, "Restarted LaunchAgent", serviceTarget);
   return { outcome: "completed" };

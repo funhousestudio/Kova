@@ -196,7 +196,7 @@ function validateOpenAICodexApiKeyInput(value: string): string | undefined {
   if (looksLikeJwtToken(trimmed) || looksLikeStructuredCredential(trimmed)) {
     // OAuth/token material belongs in token profiles; storing it as an API key
     // would make provider auth fail later with misleading model errors.
-    return `That looks like token or OAuth material, not an OpenAI API key. Use ${formatCliCommand("openclaw models auth paste-token --provider openai")} for token auth material.`;
+    return `That looks like token or OAuth material, not an OpenAI API key. Use ${formatCliCommand("kova models auth paste-token --provider openai")} for token auth material.`;
   }
   return "That does not look like an OpenAI API key.";
 }
@@ -333,7 +333,7 @@ function resolveRequestedProviderOrThrow(
     .toSorted((a, b) => a.localeCompare(b));
   const availableText = available.length > 0 ? available.join(", ") : "(none)";
   throw new Error(
-    `Unknown provider "${requested}". Loaded providers: ${availableText}. Verify plugins via \`${formatCliCommand("openclaw plugins list --json")}\`.`,
+    `Unknown provider "${requested}". Loaded providers: ${availableText}. Verify plugins via \`${formatCliCommand("kova plugins list --json")}\`.`,
   );
 }
 
@@ -593,7 +593,7 @@ export async function modelsAuthSetupTokenCommand(
 ) {
   if (!process.stdin.isTTY) {
     throw new Error(
-      `setup-token requires an interactive TTY. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} instead.`,
+      `setup-token requires an interactive TTY. In automation, use ${formatCliCommand("kova models auth paste-token --provider <provider>")} instead.`,
     );
   }
 
@@ -604,7 +604,7 @@ export async function modelsAuthSetupTokenCommand(
   const tokenProviders = listProvidersWithTokenMethods(providers);
   if (tokenProviders.length === 0) {
     throw new Error(
-      `No provider token-auth plugins found. Install one via \`${formatCliCommand("openclaw plugins install")}\`.`,
+      `No provider token-auth plugins found. Install one via \`${formatCliCommand("kova plugins install")}\`.`,
     );
   }
 
@@ -612,7 +612,7 @@ export async function modelsAuthSetupTokenCommand(
     resolveRequestedProviderOrThrow(tokenProviders, opts.provider) ?? tokenProviders[0] ?? null;
   if (!provider) {
     throw new Error(
-      `No token-capable provider is available. Run ${formatCliCommand("openclaw plugins list")} to verify provider plugins are installed.`,
+      `No token-capable provider is available. Run ${formatCliCommand("kova plugins list")} to verify provider plugins are installed.`,
     );
   }
 
@@ -657,7 +657,7 @@ export async function modelsAuthPasteTokenCommand(
   const rawProvider = normalizeOptionalString(opts.provider);
   if (!rawProvider) {
     throw new Error(
-      `Missing --provider. Run ${formatCliCommand("openclaw models status")} or ${formatCliCommand("openclaw plugins list")} to choose a provider.`,
+      `Missing --provider. Run ${formatCliCommand("kova models status")} or ${formatCliCommand("kova plugins list")} to choose a provider.`,
     );
   }
   const provider = normalizeManualAuthProvider(rawProvider);
@@ -673,7 +673,7 @@ export async function modelsAuthPasteTokenCommand(
       return validateAnthropicSetupToken(trimmed.replaceAll(/\s+/g, ""));
     }
     if (isOpenAIProvider(provider) && looksLikeOpenAIApiKey(trimmed)) {
-      return `That looks like an OpenAI API key. Use ${formatCliCommand("openclaw models auth paste-api-key --provider openai")} for API-key auth.`;
+      return `That looks like an OpenAI API key. Use ${formatCliCommand("kova models auth paste-api-key --provider openai")} for API-key auth.`;
     }
     return undefined;
   };
@@ -724,7 +724,7 @@ export async function modelsAuthPasteApiKeyCommand(
   const rawProvider = normalizeOptionalString(opts.provider);
   if (!rawProvider) {
     throw new Error(
-      `Missing --provider. Run ${formatCliCommand("openclaw models status")} or ${formatCliCommand("openclaw plugins list")} to choose a provider.`,
+      `Missing --provider. Run ${formatCliCommand("kova models status")} or ${formatCliCommand("kova plugins list")} to choose a provider.`,
     );
   }
   const provider = normalizeManualAuthProvider(rawProvider);
@@ -825,7 +825,7 @@ export async function modelsAuthAddCommand(opts: { agent?: string }, runtime: Ru
       const method = tokenMethods.find((candidate) => candidate.id === methodId);
       if (!method) {
         throw new Error(
-          `Unknown token auth method "${methodId}". Run ${formatCliCommand("openclaw models auth login --provider " + providerPlugin.id)} to choose interactively.`,
+          `Unknown token auth method "${methodId}". Run ${formatCliCommand("kova models auth login --provider " + providerPlugin.id)} to choose interactively.`,
         );
       }
       await runProviderAuthMethod({
@@ -964,7 +964,7 @@ function maybeLogOpenAICodexNativeSearchTip(runtime: RuntimeEnv, providerId: str
 export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: RuntimeEnv) {
   if (!process.stdin.isTTY) {
     throw new Error(
-      `models auth login requires an interactive TTY. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available.`,
+      `models auth login requires an interactive TTY. In automation, use ${formatCliCommand("kova models auth paste-token --provider <provider>")} when token auth is available.`,
     );
   }
 
@@ -976,7 +976,7 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
   const authProviders = listProvidersWithAuthMethods(providers);
   if (authProviders.length === 0) {
     throw new Error(
-      `No provider plugins found. Install one via \`${formatCliCommand("openclaw plugins install")}\`.`,
+      `No provider plugins found. Install one via \`${formatCliCommand("kova plugins install")}\`.`,
     );
   }
 
@@ -999,7 +999,7 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
 
   if (!selectedProvider) {
     throw new Error(
-      `Unknown provider. Run ${formatCliCommand("openclaw models status")} or ${formatCliCommand("openclaw plugins list")} to see available provider plugins.`,
+      `Unknown provider. Run ${formatCliCommand("kova models status")} or ${formatCliCommand("kova plugins list")} to see available provider plugins.`,
     );
   }
 
@@ -1011,7 +1011,7 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
 
   if (!chosenMethod) {
     throw new Error(
-      `Unknown auth method. Run ${formatCliCommand("openclaw models auth login --provider " + selectedProvider.id)} without --method to choose interactively.`,
+      `Unknown auth method. Run ${formatCliCommand("kova models auth login --provider " + selectedProvider.id)} without --method to choose interactively.`,
     );
   }
 

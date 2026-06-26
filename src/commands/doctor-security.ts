@@ -152,7 +152,7 @@ function collectExecPolicyConflictWarnings(cfg: OpenClawConfig): string[] {
         `  Host: ${hostParts.join(", ")}`,
         `  Effective host exec stays security="${snapshot.security.effective}" ask="${snapshot.ask.effective}" because the stricter side wins.`,
         "  Headless runs like isolated cron cannot answer approval prompts; align both files or enable Web UI, terminal UI, or chat exec approvals.",
-        `  Inspect with: ${formatCliCommand("openclaw approvals get --gateway")}`,
+        `  Inspect with: ${formatCliCommand("kova approvals get --gateway")}`,
       ].join("\n"),
     );
   };
@@ -233,7 +233,7 @@ function collectPlaintextConfigSecretWarnings(cfg: OpenClawConfig): string[] {
     "- WARNING: openclaw.json contains plaintext secret-bearing config fields.",
     `  Paths: ${pathLine}`,
     "  Agents or workspace tools that can read config files may see these API keys/tokens.",
-    `  Migrate them to SecretRefs with ${formatCliCommand("openclaw secrets configure")} or ${formatCliCommand("openclaw secrets apply")}, then verify with ${formatCliCommand("openclaw secrets audit --check")}.`,
+    `  Migrate them to SecretRefs with ${formatCliCommand("kova secrets configure")} or ${formatCliCommand("kova secrets apply")}, then verify with ${formatCliCommand("kova secrets audit --check")}.`,
   ];
 }
 
@@ -248,7 +248,7 @@ export async function collectSecurityWarnings(
     warnings.push(
       "- Note: approvals.exec.enabled=false disables approval forwarding only.",
       `  Host exec gating still comes from ${resolveExecApprovalsDisplayPath()}.`,
-      `  Check local policy with: ${formatCliCommand("openclaw approvals get --gateway")}`,
+      `  Check local policy with: ${formatCliCommand("kova approvals get --gateway")}`,
     );
   }
 
@@ -299,19 +299,19 @@ export async function collectSecurityWarnings(
       const authFixLines =
         resolvedAuth.mode === "password"
           ? [
-              `  Fix: ${formatCliCommand("openclaw configure")} to set a password`,
-              `  Or switch to token: ${formatCliCommand("openclaw config set gateway.auth.mode token")}`,
+              `  Fix: ${formatCliCommand("kova configure")} to set a password`,
+              `  Or switch to token: ${formatCliCommand("kova config set gateway.auth.mode token")}`,
             ]
           : [
-              `  Fix: ${formatCliCommand("openclaw doctor --fix")} to generate a token`,
+              `  Fix: ${formatCliCommand("kova doctor --fix")} to generate a token`,
               `  Or set token directly: ${formatCliCommand(
-                "openclaw config set gateway.auth.mode token",
+                "kova config set gateway.auth.mode token",
               )}`,
             ];
       warnings.push(
         `- CRITICAL: Gateway bound to ${bindDescriptor} without authentication.`,
         `  Anyone on your network (or internet if port-forwarded) can fully control your agent.`,
-        `  Fix: ${formatCliCommand("openclaw config set gateway.bind loopback")}`,
+        `  Fix: ${formatCliCommand("kova config set gateway.bind loopback")}`,
         ...saferRemoteAccessLines,
         ...authFixLines,
       );
@@ -377,7 +377,7 @@ export async function collectSecurityWarnings(
     if (dmScope === "main" && isMultiUserDm) {
       warnings.push(
         `- ${params.label} DMs: multiple senders share the main session; run: ` +
-          formatCliCommand('openclaw config set session.dmScope "per-channel-peer"') +
+          formatCliCommand('kova config set session.dmScope "per-channel-peer"') +
           ' (or "per-account-channel-peer" for multi-account channels) to isolate sessions.',
       );
     }
@@ -439,7 +439,7 @@ export async function collectSecurityWarnings(
 /** Emits security warnings plus the deep audit follow-up command. */
 export async function noteSecurityWarnings(cfg: OpenClawConfig) {
   const warnings = await collectSecurityWarnings(cfg);
-  const auditHint = `- Run: ${formatCliCommand("openclaw security audit --deep")}`;
+  const auditHint = `- Run: ${formatCliCommand("kova security audit --deep")}`;
 
   const lines = warnings.length > 0 ? warnings : ["- No channel security warnings detected."];
   lines.push(auditHint);

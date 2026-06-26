@@ -1,4 +1,4 @@
-// Renders `openclaw status --all` report data into terminal lines.
+// Renders `kova status --all` report data into terminal lines.
 // Styling is applied here so data builders remain color/theme agnostic.
 
 import { getTerminalTableWidth, renderTable } from "../../../packages/terminal-core/src/table.js";

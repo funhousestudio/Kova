@@ -675,7 +675,7 @@ function resolveRequiredDeviceRole(
     return { deviceId, role };
   }
   defaultRuntime.error(
-    `--device and --role are required. Run ${formatCliCommand("openclaw devices list")} to choose a paired device.`,
+    `--device and --role are required. Run ${formatCliCommand("kova devices list")} to choose a paired device.`,
   );
   defaultRuntime.exit(1);
   return null;
@@ -775,7 +775,7 @@ export async function runDevicesRemoveCommand(
   const trimmed = deviceId.trim();
   if (!trimmed) {
     defaultRuntime.error(
-      `deviceId is required. Run ${formatCliCommand("openclaw devices list")} to choose a paired device.`,
+      `deviceId is required. Run ${formatCliCommand("kova devices list")} to choose a paired device.`,
     );
     defaultRuntime.exit(1);
     return;

@@ -1,4 +1,4 @@
-// Commander wiring for `openclaw update`, its status/finalize subcommands, and help text.
+// Commander wiring for `kova update`, its status/finalize subcommands, and help text.
 import type { Command } from "commander";
 import { formatDocsLink } from "../../packages/terminal-core/src/links.js";
 import { theme } from "../../packages/terminal-core/src/theme.js";
@@ -79,9 +79,9 @@ function registerUpdateFinalizationCommand(update: Command, name: string, hidden
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw update repair", "Rerun post-update doctor and plugin convergence."],
-          ["openclaw update repair --channel beta", "Repair against the beta update channel."],
-          ["openclaw update repair --json", "JSON output for automation."],
+          ["kova update repair", "Rerun post-update doctor and plugin convergence."],
+          ["kova update repair --channel beta", "Repair against the beta update channel."],
+          ["kova update repair --json", "JSON output for automation."],
         ])}\n\n${theme.heading("Notes:")}\n${theme.muted(
           "- Repairs post-update plugin state after the core package already changed",
         )}\n${theme.muted("- Runs doctor repair and plugin convergence, but never restarts the Gateway")}\n\n${theme.muted(
@@ -129,19 +129,19 @@ export function registerUpdateCli(program: Command) {
     )
     .addHelpText("after", () => {
       const examples = [
-        ["openclaw update", "Update a source checkout (git)"],
-        ["openclaw update --channel beta", "Switch to beta channel (git + npm)"],
-        ["openclaw update --channel dev", "Switch to dev channel (git + npm)"],
-        ["openclaw update --tag beta", "One-off update to a dist-tag or version"],
-        ["openclaw update --tag main", "One-off package update from GitHub main"],
-        ["openclaw update --dry-run", "Preview actions without changing anything"],
-        ["openclaw update --no-restart", "Update without restarting the service"],
-        ["openclaw update --json", "Output result as JSON"],
-        ["openclaw update --yes", "Non-interactive (accept downgrade prompts)"],
-        ["openclaw update repair", "Repair stranded post-update plugin state"],
-        ["openclaw update --acknowledge-clawhub-risk", "Acknowledge ClawHub plugin trust warnings"],
-        ["openclaw update wizard", "Interactive update wizard"],
-        ["openclaw --update", "Shorthand for openclaw update"],
+        ["kova update", "Update a source checkout (git)"],
+        ["kova update --channel beta", "Switch to beta channel (git + npm)"],
+        ["kova update --channel dev", "Switch to dev channel (git + npm)"],
+        ["kova update --tag beta", "One-off update to a dist-tag or version"],
+        ["kova update --tag main", "One-off package update from GitHub main"],
+        ["kova update --dry-run", "Preview actions without changing anything"],
+        ["kova update --no-restart", "Update without restarting the service"],
+        ["kova update --json", "Output result as JSON"],
+        ["kova update --yes", "Non-interactive (accept downgrade prompts)"],
+        ["kova update repair", "Repair stranded post-update plugin state"],
+        ["kova update --acknowledge-clawhub-risk", "Acknowledge ClawHub plugin trust warnings"],
+        ["kova update wizard", "Interactive update wizard"],
+        ["kova --update", "Shorthand for openclaw update"],
       ] as const;
       const fmtExamples = examples
         .map(([cmd, desc]) => `  ${theme.command(cmd)} ${theme.muted(`# ${desc}`)}`)
@@ -223,9 +223,9 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/up
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw update status", "Show channel + version status."],
-          ["openclaw update status --json", "JSON output."],
-          ["openclaw update status --timeout 10", "Custom timeout."],
+          ["kova update status", "Show channel + version status."],
+          ["kova update status --json", "JSON output."],
+          ["kova update status --timeout 10", "Custom timeout."],
         ])}\n\n${theme.heading("Notes:")}\n${theme.muted(
           "- Shows current update channel (stable/beta/dev) and source",
         )}\n${theme.muted("- Includes git tag/branch/SHA for source checkouts")}\n\n${theme.muted(

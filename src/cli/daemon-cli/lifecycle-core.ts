@@ -372,7 +372,7 @@ export async function runServiceStart(params: {
         `${params.serviceNoun} service needs repair before it can start: ${startResult.issues
           .map((issue) => issue.message)
           .join("; ")}`,
-        [formatCliCommand("openclaw gateway install --force")],
+        [formatCliCommand("kova gateway install --force")],
       );
       return;
     }

@@ -43,7 +43,7 @@ import {
 } from "./storage-scan.js";
 import { discoverConfigSecretTargets } from "./target-registry.js";
 
-/** Stable finding codes emitted by `openclaw secrets audit`. */
+/** Stable finding codes emitted by `kova secrets audit`. */
 export type SecretsAuditCode =
   | "PLAINTEXT_FOUND"
   | "REF_UNRESOLVED"

@@ -40,10 +40,10 @@ export function resolvePluginVersionDriftUpdateCommand(entry: PluginVersionDrift
   if (exactNpmPackageName) {
     const exactNpmTarget = `${exactNpmPackageName}@${entry.gatewayVersion}`;
     if (parseRegistryNpmSpec(exactNpmTarget)?.selectorKind === "exact-version") {
-      return `openclaw plugins update ${exactNpmTarget}`;
+      return `kova plugins update ${exactNpmTarget}`;
     }
   }
-  return `openclaw plugins update ${entry.pluginId}`;
+  return `kova plugins update ${entry.pluginId}`;
 }
 
 /**

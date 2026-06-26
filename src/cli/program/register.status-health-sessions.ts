@@ -124,15 +124,15 @@ export function registerStatusHealthSessionsCommands(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw status", "Show channel health + session summary."],
-          ["openclaw status --all", "Full diagnosis (read-only)."],
-          ["openclaw status --json", "Machine-readable output."],
-          ["openclaw status --usage", "Show model provider usage/quota snapshots."],
+          ["kova status", "Show channel health + session summary."],
+          ["kova status --all", "Full diagnosis (read-only)."],
+          ["kova status --json", "Machine-readable output."],
+          ["kova status --usage", "Show model provider usage/quota snapshots."],
           [
-            "openclaw status --deep",
+            "kova status --deep",
             "Run channel probes (WA + Telegram + Discord + Slack + Signal).",
           ],
-          ["openclaw status --deep --timeout 5000", "Tighten probe timeout."],
+          ["kova status --deep --timeout 5000", "Tighten probe timeout."],
         ])}`,
     )
     .addHelpText(
@@ -190,13 +190,13 @@ export function registerStatusHealthSessionsCommands(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw sessions", "List all sessions."],
-          ["openclaw sessions --agent work", "List sessions for one agent."],
-          ["openclaw sessions --all-agents", "Aggregate sessions across agents."],
-          ["openclaw sessions --active 120", "Only last 2 hours."],
-          ["openclaw sessions --limit 25", "Show the newest 25 sessions."],
-          ["openclaw sessions --json", "Machine-readable output."],
-          ["openclaw sessions --store ./tmp/sessions.json", "Use a specific session store."],
+          ["kova sessions", "List all sessions."],
+          ["kova sessions --agent work", "List sessions for one agent."],
+          ["kova sessions --all-agents", "Aggregate sessions across agents."],
+          ["kova sessions --active 120", "Only last 2 hours."],
+          ["kova sessions --limit 25", "Show the newest 25 sessions."],
+          ["kova sessions --json", "Machine-readable output."],
+          ["kova sessions --store ./tmp/sessions.json", "Use a specific session store."],
         ])}\n\n${theme.muted(
           "Shows token usage per session when the agent reports it; set agents.defaults.contextTokens to cap the window and show %.",
         )}`,
@@ -242,20 +242,20 @@ export function registerStatusHealthSessionsCommands(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw sessions cleanup --dry-run", "Preview stale/cap cleanup."],
+          ["kova sessions cleanup --dry-run", "Preview stale/cap cleanup."],
           [
-            "openclaw sessions cleanup --dry-run --fix-missing",
+            "kova sessions cleanup --dry-run --fix-missing",
             "Also preview pruning entries with missing transcript files.",
           ],
           [
-            "openclaw sessions cleanup --dry-run --fix-dm-scope",
+            "kova sessions cleanup --dry-run --fix-dm-scope",
             "Preview stale direct-DM rows after returning dmScope to main.",
           ],
-          ["openclaw sessions cleanup --enforce", "Apply maintenance now."],
-          ["openclaw sessions cleanup --agent work --dry-run", "Preview one agent store."],
-          ["openclaw sessions cleanup --all-agents --dry-run", "Preview all agent stores."],
+          ["kova sessions cleanup --enforce", "Apply maintenance now."],
+          ["kova sessions cleanup --agent work --dry-run", "Preview one agent store."],
+          ["kova sessions cleanup --all-agents --dry-run", "Preview all agent stores."],
           [
-            "openclaw sessions cleanup --enforce --store ./tmp/sessions.json",
+            "kova sessions cleanup --enforce --store ./tmp/sessions.json",
             "Use a specific store.",
           ],
         ])}`,
@@ -374,15 +374,15 @@ export function registerStatusHealthSessionsCommands(program: Command) {
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
           [
-            'openclaw sessions compact "agent:main:main"',
+            'kova sessions compact "agent:main:main"',
             "LLM-summarize a session to reclaim context budget.",
           ],
           [
-            'openclaw sessions compact "agent:main:main" --max-lines 200',
+            'kova sessions compact "agent:main:main" --max-lines 200',
             "Truncate to the last 200 transcript lines instead.",
           ],
           [
-            'openclaw sessions compact "agent:work:main" --agent work --json',
+            'kova sessions compact "agent:work:main" --agent work --json',
             "Target one agent's session and emit JSON.",
           ],
         ])}\n\n${theme.muted(
@@ -392,7 +392,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
     .action(async (key: string, opts, command) => {
       // Sibling `sessions` subcommands inherit parent options (see list/cleanup
       // above): `--agent`/`--json` may be supplied on the parent `sessions`
-      // command, e.g. `openclaw sessions --agent work compact <key>`. Merge those
+      // command, e.g. `kova sessions --agent work compact <key>`. Merge those
       // so a parent `--agent` is not silently dropped and the wrong agent's
       // session compacted.
       //
@@ -470,10 +470,10 @@ export function registerStatusHealthSessionsCommands(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw commitments", "List pending inferred follow-ups."],
-          ["openclaw commitments --all", "List all inferred follow-ups."],
-          ["openclaw commitments --agent work", "List one agent's inferred follow-ups."],
-          ["openclaw commitments dismiss cm_abc123", "Dismiss a follow-up."],
+          ["kova commitments", "List pending inferred follow-ups."],
+          ["kova commitments --all", "List all inferred follow-ups."],
+          ["kova commitments --agent work", "List one agent's inferred follow-ups."],
+          ["kova commitments dismiss cm_abc123", "Dismiss a follow-up."],
         ])}`,
     )
     .action(async (opts) => {

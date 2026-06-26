@@ -297,10 +297,10 @@ export async function ensureConfigReady(params: {
   params.runtime.error("");
   const fixHint = isPluginPackagingRuntimeOutputInvalidConfigSnapshot(snapshot)
     ? formatPluginPackagingRuntimeOutputRecoveryHint()
-    : commandText(formatCliCommand("openclaw doctor --fix"));
+    : commandText(formatCliCommand("kova doctor --fix"));
   params.runtime.error(`${muted("Fix:")} ${fixHint}`);
   params.runtime.error(
-    `${muted("Inspect:")} ${commandText(formatCliCommand("openclaw config validate"))}`,
+    `${muted("Inspect:")} ${commandText(formatCliCommand("kova config validate"))}`,
   );
   params.runtime.error(
     muted(
