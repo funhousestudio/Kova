@@ -22,6 +22,7 @@ import { buildCliRespawnPlan, runCliRespawnPlan } from "./entry.respawn.js";
 import { tryHandleRootVersionFastPath } from "./entry.version-fast-path.js";
 import { normalizeEnv } from "./infra/env.js";
 import { isMainModule } from "./infra/is-main.js";
+import { appendActionLog, ensureKovaDirs } from "./infra/kova-local-storage.js";
 import { ensureOpenClawExecMarkerOnProcess } from "./infra/openclaw-exec-env.js";
 import { installProcessWarningFilter } from "./infra/warning-filter.js";
 
@@ -68,10 +69,14 @@ if (
     installRoot,
   });
   if (!waitingForCompileCacheRespawn) {
-    process.title = "openclaw";
+    process.title = "kova";
     ensureOpenClawExecMarkerOnProcess();
     installProcessWarningFilter();
     normalizeEnv();
+    // Ensure ~/.kova/ dirs exist and log startup action (fire-and-forget).
+    ensureKovaDirs().then(() =>
+      appendActionLog({ ts: Date.now(), type: "startup", argv: process.argv.slice(2) }),
+    );
 
     enableOpenClawCompileCache({
       installRoot,

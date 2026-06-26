@@ -300,7 +300,7 @@ function resolveDefaultExecApprovalsStateDir(
   env: NodeJS.ProcessEnv,
   homedir: () => string,
 ): string {
-  return path.join(resolveRequiredHomeDir(env, homedir), ".openclaw");
+  return path.join(resolveRequiredHomeDir(env, homedir), ".kova");
 }
 
 function resolveDefaultExecApprovalsPath(env: NodeJS.ProcessEnv, homedir: () => string): string {

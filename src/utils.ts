@@ -128,7 +128,7 @@ export function resolveUserPath(
   return resolveHomeRelativePath(input, { env, homedir });
 }
 
-/** Resolves the OpenClaw config directory from state/config env overrides or home. */
+/** Resolves the KOVA config directory from state/config env overrides or home. */
 export function resolveConfigDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = os.homedir,
@@ -141,16 +141,21 @@ export function resolveConfigDir(
   if (configPath) {
     return path.dirname(resolveUserPath(configPath, env, homedir));
   }
-  const newDir = path.join(resolveRequiredHomeDir(env, homedir), ".openclaw");
+  const home = resolveRequiredHomeDir(env, homedir);
+  const kovaDir = path.join(home, ".kova");
   try {
-    const hasNew = fs.existsSync(newDir);
-    if (hasNew) {
-      return newDir;
+    // Prefer ~/.kova; fall back to ~/.openclaw for existing installs.
+    if (fs.existsSync(kovaDir)) {
+      return kovaDir;
+    }
+    const legacyDir = path.join(home, ".openclaw");
+    if (fs.existsSync(legacyDir)) {
+      return legacyDir;
     }
   } catch {
     // best-effort
   }
-  return newDir;
+  return kovaDir;
 }
 
 /** Resolves the effective OpenClaw home directory, if one can be determined. */
