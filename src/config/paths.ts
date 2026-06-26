@@ -19,11 +19,12 @@ export function resolveIsNixMode(env: NodeJS.ProcessEnv = process.env): boolean 
 
 export let isNixMode = resolveIsNixMode();
 
-// Support the remaining legacy pre-rebrand state dir.
-const LEGACY_STATE_DIRNAMES = [".clawdbot"] as const;
-const NEW_STATE_DIRNAME = ".openclaw";
-const CONFIG_FILENAME = "openclaw.json";
-const LEGACY_CONFIG_FILENAMES = ["clawdbot.json"] as const;
+// Legacy state dirs, newest-legacy first so migration finds the most recent first.
+const LEGACY_STATE_DIRNAMES = [".openclaw", ".clawdbot"] as const;
+const NEW_STATE_DIRNAME = ".kova";
+const CONFIG_FILENAME = "kova.json";
+// Legacy config filenames tried in order when kova.json is not present.
+const LEGACY_CONFIG_FILENAMES = ["openclaw.json", "clawdbot.json"] as const;
 
 function resolveDefaultHomeDir(): string {
   return resolveRequiredHomeDir(process.env, os.homedir);
@@ -147,7 +148,7 @@ export let STATE_DIR = resolveStateDir();
 /**
  * Config file path (JSON or JSON5).
  * Can be overridden via OPENCLAW_CONFIG_PATH.
- * Default: ~/.openclaw/openclaw.json (or $OPENCLAW_STATE_DIR/openclaw.json)
+ * Default: ~/.kova/kova.json (or $OPENCLAW_STATE_DIR/kova.json)
  */
 export function resolveCanonicalConfigPath(
   env: NodeJS.ProcessEnv = process.env,
