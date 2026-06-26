@@ -175,7 +175,7 @@ export function runCliRespawnPlan(
     runtime,
     onError: (error) => {
       runtime.writeError(
-        "[openclaw] Failed to respawn CLI:",
+        "[kova] Failed to respawn CLI:",
         error instanceof Error ? (error.stack ?? error.message) : error,
       );
     },

@@ -115,12 +115,7 @@ export function resolveOpenClawCompileCacheDirectory(params: {
     env.NODE_COMPILE_CACHE && !isNodeCompileCacheDisabled(env)
       ? env.NODE_COMPILE_CACHE
       : path.join(os.tmpdir(), "node-compile-cache");
-  return path.join(
-    baseDirectory,
-    "openclaw",
-    version,
-    sanitizeCompileCachePathSegment(installMarker),
-  );
+  return path.join(baseDirectory, "kova", version, sanitizeCompileCachePathSegment(installMarker));
 }
 
 type OpenClawCompileCacheRespawnPlan = {

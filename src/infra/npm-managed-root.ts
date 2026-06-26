@@ -90,7 +90,8 @@ function isSafePackageName(name: string): boolean {
 }
 
 function isManagedNpmRootHostPeerPackageName(name: string): boolean {
-  return name === "openclaw";
+  // Accept both "kova" (current package name) and "openclaw" (legacy peer dep name in older plugins).
+  return name === "kova" || name === "openclaw";
 }
 
 function readOverrideRecord(value: unknown): Record<string, unknown> {
@@ -641,8 +642,12 @@ function scrubHostPeerFromLockPackage(value: unknown): boolean {
     return false;
   }
   let changed = false;
-  if (isRecord(value.peerDependencies) && "openclaw" in value.peerDependencies) {
+  if (
+    isRecord(value.peerDependencies) &&
+    ("kova" in value.peerDependencies || "openclaw" in value.peerDependencies)
+  ) {
     const peerDependencies = { ...value.peerDependencies };
+    delete peerDependencies.kova;
     delete peerDependencies.openclaw;
     if (Object.keys(peerDependencies).length > 0) {
       value.peerDependencies = peerDependencies;
@@ -651,8 +656,12 @@ function scrubHostPeerFromLockPackage(value: unknown): boolean {
     }
     changed = true;
   }
-  if (isRecord(value.peerDependenciesMeta) && "openclaw" in value.peerDependenciesMeta) {
+  if (
+    isRecord(value.peerDependenciesMeta) &&
+    ("kova" in value.peerDependenciesMeta || "openclaw" in value.peerDependenciesMeta)
+  ) {
     const peerDependenciesMeta = { ...value.peerDependenciesMeta };
+    delete peerDependenciesMeta.kova;
     delete peerDependenciesMeta.openclaw;
     if (Object.keys(peerDependenciesMeta).length > 0) {
       value.peerDependenciesMeta = peerDependenciesMeta;
@@ -977,9 +986,11 @@ export async function repairManagedNpmRootOpenClawPeer(params: {
   const manifestPath = path.join(params.npmRoot, "package.json");
   const manifest = await readManagedNpmRootManifest(manifestPath);
   const dependencies = readDependencyRecord(manifest.dependencies);
-  const hasManifestDependency = "openclaw" in dependencies;
+  const hasManifestDependency = "kova" in dependencies || "openclaw" in dependencies;
   const hasLockDependency = await managedNpmRootLockfileHasOpenClawPeer(params.npmRoot);
-  const hasPackageDir = await pathExists(path.join(params.npmRoot, "node_modules", "openclaw"));
+  const hasPackageDir =
+    (await pathExists(path.join(params.npmRoot, "node_modules", "kova"))) ||
+    (await pathExists(path.join(params.npmRoot, "node_modules", "openclaw")));
   const preserveActiveHostLink = activeHostState === "linked-active-host";
   if (!hasManifestDependency && !hasLockDependency && (!hasPackageDir || preserveActiveHostLink)) {
     return false;
@@ -1003,7 +1014,7 @@ export async function repairManagedNpmRootOpenClawPeer(params: {
         "--ignore-scripts",
         "--no-audit",
         "--no-fund",
-        "openclaw",
+        "kova",
       ]
     : [
         "npm",
@@ -1056,7 +1067,11 @@ async function readManagedNpmRootOpenClawHostState(params: {
     return "none";
   }
 
-  const managedOpenClawPackageDir = path.join(params.npmRoot, "node_modules", "openclaw");
+  const managedOpenClawPackageDir = (await pathExists(
+    path.join(params.npmRoot, "node_modules", "kova"),
+  ))
+    ? path.join(params.npmRoot, "node_modules", "kova")
+    : path.join(params.npmRoot, "node_modules", "openclaw");
   const [hostPackageRoot, managedPackageRoot, managedPackageStat] = await Promise.all([
     realpathIfExists(packageRoot),
     realpathIfExists(managedOpenClawPackageDir),
@@ -1077,15 +1092,18 @@ async function managedNpmRootLockfileHasOpenClawPeer(npmRoot: string): Promise<b
       if (
         isRecord(rootPackage) &&
         isRecord(rootPackage.dependencies) &&
-        "openclaw" in rootPackage.dependencies
+        ("kova" in rootPackage.dependencies || "openclaw" in rootPackage.dependencies)
       ) {
         return true;
       }
-      if ("node_modules/openclaw" in parsed.packages) {
+      if ("node_modules/kova" in parsed.packages || "node_modules/openclaw" in parsed.packages) {
         return true;
       }
     }
-    return isRecord(parsed.dependencies) && "openclaw" in parsed.dependencies;
+    return (
+      isRecord(parsed.dependencies) &&
+      ("kova" in parsed.dependencies || "openclaw" in parsed.dependencies)
+    );
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
       return false;
@@ -1135,8 +1153,8 @@ async function scrubManagedNpmRootOpenClawPeer(params: {
   const manifestPath = path.join(params.npmRoot, "package.json");
   const manifest = await readManagedNpmRootManifest(manifestPath);
   const dependencies = readDependencyRecord(manifest.dependencies);
-  if ("openclaw" in dependencies) {
-    const { openclaw: _removed, ...nextDependencies } = dependencies;
+  if ("kova" in dependencies || "openclaw" in dependencies) {
+    const { kova: _k, openclaw: _o, ...nextDependencies } = dependencies as Record<string, unknown>;
     await fs.writeFile(
       manifestPath,
       `${JSON.stringify({ ...manifest, private: true, dependencies: nextDependencies }, null, 2)}\n`,
@@ -1152,19 +1170,25 @@ async function scrubManagedNpmRootOpenClawPeer(params: {
       const rootPackage = parsed.packages[""];
       if (isRecord(rootPackage) && isRecord(rootPackage.dependencies)) {
         const dependenciesValue = { ...rootPackage.dependencies };
-        if ("openclaw" in dependenciesValue) {
+        if ("kova" in dependenciesValue || "openclaw" in dependenciesValue) {
+          delete dependenciesValue.kova;
           delete dependenciesValue.openclaw;
           parsed.packages[""] = { ...rootPackage, dependencies: dependenciesValue };
           lockChanged = true;
         }
       }
-      if ("node_modules/openclaw" in parsed.packages) {
+      if ("node_modules/kova" in parsed.packages || "node_modules/openclaw" in parsed.packages) {
+        delete parsed.packages["node_modules/kova"];
         delete parsed.packages["node_modules/openclaw"];
         lockChanged = true;
       }
     }
-    if (isRecord(parsed.dependencies) && "openclaw" in parsed.dependencies) {
+    if (
+      isRecord(parsed.dependencies) &&
+      ("kova" in parsed.dependencies || "openclaw" in parsed.dependencies)
+    ) {
       const dependenciesLocal = { ...parsed.dependencies };
+      delete dependenciesLocal.kova;
       delete dependenciesLocal.openclaw;
       parsed.dependencies = dependenciesLocal;
       lockChanged = true;
@@ -1178,13 +1202,19 @@ async function scrubManagedNpmRootOpenClawPeer(params: {
     }
   }
 
-  const openclawPackageDir = path.join(params.npmRoot, "node_modules", "openclaw");
-  if (!params.preservePackageDir && (await pathExists(openclawPackageDir))) {
-    await fs.rm(openclawPackageDir, { recursive: true, force: true });
-  }
   const binDir = path.join(params.npmRoot, "node_modules", ".bin");
+  if (!params.preservePackageDir) {
+    await Promise.all(
+      ["kova", "openclaw"].map(async (pkgName) => {
+        const pkgDir = path.join(params.npmRoot, "node_modules", pkgName);
+        if (await pathExists(pkgDir)) {
+          await fs.rm(pkgDir, { recursive: true, force: true });
+        }
+      }),
+    );
+  }
   await Promise.all(
-    ["openclaw", "openclaw.cmd", "openclaw.ps1"].map((binName) =>
+    ["kova", "kova.cmd", "kova.ps1", "openclaw", "openclaw.cmd", "openclaw.ps1"].map((binName) =>
       fs.rm(path.join(binDir, binName), { force: true }),
     ),
   );
