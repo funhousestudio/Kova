@@ -2,7 +2,7 @@
 // Hace 3 preguntas y escribe la config mínima en ~/.kova/kova.json.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { cancel, intro, outro, select, text, isCancel } from "@clack/prompts";
+import { cancel, intro, outro, select, text, confirm, isCancel } from "@clack/prompts";
 import { theme } from "../../packages/terminal-core/src/theme.js";
 import { formatCliCommand } from "../cli/command-format.js";
 import { appendActionLog, ensureKovaDirs, kovaDir } from "../infra/kova-local-storage.js";
@@ -105,6 +105,16 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
     return { ok: false, reason: "cancelled" };
   }
 
+  // Step 4: semantic memory (optional)
+  const wantsMemory = await confirm({
+    message: "¿Activar memoria semántica profunda? (LanceDB — recuerda todo entre sesiones)",
+    initialValue: false,
+  });
+  if (isCancel(wantsMemory)) {
+    cancel("Configuración cancelada.");
+    return { ok: false, reason: "cancelled" };
+  }
+
   // Write config
   await ensureKovaDirs();
   const configPath = path.join(kovaDir(), "kova.json");
@@ -125,9 +135,35 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
     ...(apiKey && aiChoice === "gemini" ? { auth: { GOOGLE_API_KEY: apiKey } } : {}),
   };
 
+  // LanceDB semantic memory config — uses the same embedding endpoint as the AI provider.
+  const memoryPluginConfig = wantsMemory
+    ? {
+        enabled: true,
+        config: {
+          embedding: {
+            provider: "openai",
+            model: "text-embedding-3-small",
+            ...(preset.baseUrl ? { baseUrl: preset.baseUrl } : {}),
+            ...(apiKey && aiChoice === "openai" ? { apiKey } : {}),
+          },
+          autoCapture: true,
+          autoRecall: true,
+          dbPath: path.join(kovaDir(), "memory", "lancedb"),
+        },
+      }
+    : undefined;
+
   const newConfig = {
     ...existingConfig,
     agent: agentConfig,
+    ...(memoryPluginConfig
+      ? {
+          plugins: {
+            ...((existingConfig.plugins as Record<string, unknown>) ?? {}),
+            "memory-lancedb": memoryPluginConfig,
+          },
+        }
+      : {}),
   };
 
   await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2) + "\n", "utf8");
@@ -140,10 +176,14 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
   });
 
   const channelHint = CHANNEL_HINTS[channelChoice as string] ?? "";
+  const memoryNote = wantsMemory
+    ? `  ${theme.muted("Memoria semántica:")} ${theme.info("LanceDB activado")} — ${theme.muted("necesitás")}: ${formatCliCommand("kova plugins install memory-lancedb")}\n`
+    : "";
   outro(
     `${theme.success("✓ KOVA configurado")} — config en ${theme.info(configPath)}\n\n` +
       `  ${theme.muted("Arrancar KOVA:")}  ${formatCliCommand("kova gateway start --daemon")}\n` +
       (channelHint ? `  ${theme.muted("Siguiente paso:")} ${channelHint}\n` : "") +
+      memoryNote +
       `\n  ${theme.muted("Podés editar la config en:")} ${theme.info(configPath)}`,
   );
 

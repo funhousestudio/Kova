@@ -28,11 +28,11 @@ export type MemoryCategory = (typeof MEMORY_CATEGORIES)[number];
 const DEFAULT_MODEL = "text-embedding-3-small";
 export const DEFAULT_CAPTURE_MAX_CHARS = 500;
 export const DEFAULT_RECALL_MAX_CHARS = 1000;
-const LEGACY_STATE_DIRS: string[] = [];
+const LEGACY_STATE_DIRS = [".openclaw", ".clawdbot"] as const;
 
 function resolveDefaultDbPath(): string {
   const home = homedir();
-  const preferred = join(home, ".openclaw", "memory", "lancedb");
+  const preferred = join(home, ".kova", "memory", "lancedb");
   try {
     if (fs.existsSync(preferred)) {
       return preferred;
