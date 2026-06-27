@@ -3,7 +3,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { openClawRootFs, openClawRootFsSync } from "./openclaw-root.fs.runtime.js";
 
-const CORE_PACKAGE_NAMES = new Set(["openclaw"]);
+// KOVA ships as a rename of the core package; the package.json `name` is "kova".
+// Both names must resolve the install root, or package-relative asset/template
+// lookups fall back to cwd and miss bundled files (e.g. src/agents/templates).
+const CORE_PACKAGE_NAMES = new Set(["openclaw", "kova"]);
 const packageNameCache = new Map<string, string | null>();
 const packageRootCache = new Map<string, string | null>();
 const argv1CandidateCache = new Map<string, string[]>();
