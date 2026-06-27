@@ -187,9 +187,17 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
     },
     ...(memoryPluginConfig
       ? {
+          // Per-plugin config lives under plugins.entries.<id>; the schema's
+          // strict plugins object rejects ids placed directly on `plugins`.
           plugins: {
             ...((existingConfig.plugins as Record<string, unknown>) ?? {}),
-            "memory-lancedb": memoryPluginConfig,
+            entries: {
+              ...(((existingConfig.plugins as Record<string, unknown>)?.entries as Record<
+                string,
+                unknown
+              >) ?? {}),
+              "memory-lancedb": memoryPluginConfig,
+            },
           },
         }
       : {}),
