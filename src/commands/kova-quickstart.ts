@@ -8,7 +8,6 @@ import { formatCliCommand } from "../cli/command-format.js";
 import {
   AUTONOMY_MODE_LABELS,
   AUTONOMY_MODES,
-  MODE_TO_EXEC_POLICY,
   writeKovaMode,
   type KovaAutonomyMode,
 } from "../infra/kova-autonomy-mode.js";
@@ -18,27 +17,38 @@ type QuickstartResult =
   | { ok: true; configPath: string }
   | { ok: false; reason: "cancelled" | "error"; message?: string };
 
-const AI_PRESETS: Record<string, { model: string; baseUrl?: string; label: string }> = {
+// Each preset maps to a canonical `provider/model` ref plus an optional provider
+// overlay. `provider` is the schema provider id; `baseUrl` is only set for
+// providers that need an explicit OpenAI-compatible endpoint (llama.cpp). Ollama
+// is a built-in provider and resolves its native localhost endpoint on its own.
+const AI_PRESETS: Record<
+  string,
+  { modelRef: string; provider: string; baseUrl?: string; label: string }
+> = {
   local_llama: {
-    model: "openai/local",
+    modelRef: "openai/local",
+    provider: "openai",
     baseUrl: "http://localhost:8090/v1",
     label: "IA local (llama.cpp en puerto 8090)",
   },
   local_ollama: {
-    model: "openai/local",
-    baseUrl: "http://localhost:11434/v1",
+    modelRef: "ollama/llama3.2",
+    provider: "ollama",
     label: "IA local (Ollama en puerto 11434)",
   },
   openai: {
-    model: "openai/gpt-4o",
+    modelRef: "openai/gpt-4o",
+    provider: "openai",
     label: "OpenAI (GPT-4o — necesitás API key)",
   },
   anthropic: {
-    model: "anthropic/claude-sonnet-4-6",
+    modelRef: "anthropic/claude-sonnet-4-6",
+    provider: "anthropic",
     label: "Anthropic (Claude Sonnet 4.6 — necesitás API key)",
   },
   gemini: {
-    model: "google/gemini-2.0-flash",
+    modelRef: "google/gemini-2.0-flash",
+    provider: "google",
     label: "Google Gemini (Flash — necesitás API key)",
   },
 };
@@ -148,15 +158,40 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
     existingConfig = {};
   }
 
-  const agentConfig: Record<string, unknown> = {
-    model: preset.model,
-    ...(preset.baseUrl ? { baseUrl: preset.baseUrl } : {}),
-    ...(apiKey && aiChoice === "openai" ? { auth: { OPENAI_API_KEY: apiKey } } : {}),
-    ...(apiKey && aiChoice === "anthropic" ? { auth: { ANTHROPIC_API_KEY: apiKey } } : {}),
-    ...(apiKey && aiChoice === "gemini" ? { auth: { GOOGLE_API_KEY: apiKey } } : {}),
+  // Model selection lives at agents.defaults.model (a `provider/model` string).
+  const existingAgents = (existingConfig.agents as Record<string, unknown>) ?? {};
+  const existingDefaults = (existingAgents.defaults as Record<string, unknown>) ?? {};
+  const agentsConfig = {
+    ...existingAgents,
+    defaults: { ...existingDefaults, model: preset.modelRef },
   };
 
-  // LanceDB semantic memory config — uses the same embedding endpoint as the AI provider.
+  // Endpoint/key overrides live at models.providers.<provider>: baseUrl for the
+  // local llama.cpp endpoint, apiKey for the chosen cloud provider.
+  const providerOverlay: Record<string, unknown> = {
+    ...(preset.baseUrl ? { baseUrl: preset.baseUrl } : {}),
+    ...(apiKey ? { apiKey } : {}),
+  };
+  const existingModels = (existingConfig.models as Record<string, unknown>) ?? {};
+  const existingProviders = (existingModels.providers as Record<string, unknown>) ?? {};
+  const modelsConfig =
+    Object.keys(providerOverlay).length > 0
+      ? {
+          models: {
+            ...existingModels,
+            providers: {
+              ...existingProviders,
+              [preset.provider]: {
+                ...((existingProviders[preset.provider] as Record<string, unknown>) ?? {}),
+                ...providerOverlay,
+              },
+            },
+          },
+        }
+      : {};
+
+  // LanceDB semantic memory config — embeds via the local llama.cpp endpoint when
+  // present, otherwise the chosen OpenAI key.
   const memoryPluginConfig = wantsMemory
     ? {
         enabled: true,
@@ -174,30 +209,21 @@ export async function kovaQuickstartCommand(): Promise<QuickstartResult> {
       }
     : undefined;
 
+  const existingPlugins = (existingConfig.plugins as Record<string, unknown>) ?? {};
+  const existingEntries = (existingPlugins.entries as Record<string, unknown>) ?? {};
+  // tools.exec.mode is owned by writeKovaMode() below, which merges the autonomy
+  // mode into kova.json after this write.
   const newConfig = {
     ...existingConfig,
-    agent: agentConfig,
-    tools: {
-      ...((existingConfig.tools as Record<string, unknown>) ?? {}),
-      exec: {
-        ...(((existingConfig.tools as Record<string, unknown>)?.exec as Record<string, unknown>) ??
-          {}),
-        mode: MODE_TO_EXEC_POLICY[autonomyMode],
-      },
-    },
+    agents: agentsConfig,
+    ...modelsConfig,
+    // Per-plugin config lives under plugins.entries.<id>; the schema's strict
+    // plugins object rejects ids placed directly on `plugins`.
     ...(memoryPluginConfig
       ? {
-          // Per-plugin config lives under plugins.entries.<id>; the schema's
-          // strict plugins object rejects ids placed directly on `plugins`.
           plugins: {
-            ...((existingConfig.plugins as Record<string, unknown>) ?? {}),
-            entries: {
-              ...(((existingConfig.plugins as Record<string, unknown>)?.entries as Record<
-                string,
-                unknown
-              >) ?? {}),
-              "memory-lancedb": memoryPluginConfig,
-            },
+            ...existingPlugins,
+            entries: { ...existingEntries, "memory-lancedb": memoryPluginConfig },
           },
         }
       : {}),
